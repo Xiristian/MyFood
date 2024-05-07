@@ -41,20 +41,20 @@ export const DatabaseConnectionProvider: React.FC<{
   }, [connect, connection]);
 
   if (!connection) {
-    return (
-      <View
-        style={{
-          backgroundColor: "#7a3687",
-          justifyContent: "center",
-          alignItems: "center",
-          flex: 1,
-        }}
-      >
+  return (
+  <View
+  style={{
+  backgroundColor: "#7a3687",
+  justifyContent: "center",
+  alignItems: "center",
+  flex: 1,
+  }}
+  >
         <Text lightColor="#eee" darkColor="rgba(255,255,255,0.1)">
-          Loading...
-        </Text>
-      </View>
-    );
+  Loading...
+  </Text>
+  </View>
+  );
   }
 
   return (
