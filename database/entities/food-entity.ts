@@ -3,20 +3,20 @@ import { Meal } from './meal-entity';
 import { BaseEntity } from './base-entity';
 
 @Entity()
-export class Food extends BaseEntity{
-  @Column()
+export class Food extends BaseEntity {
+  @Column('varchar')
   name: string;
 
-  @Column()
+  @Column('numeric')
   quantity: number;
 
-  @Column()
+  @Column('numeric')
   calories: number;
 
-  @Column()
+  @Column('date')
   date: Date;
 
-  @ManyToOne(() => Meal, meal => meal.foods)
+  @ManyToOne('Meal', 'foods')
   @JoinColumn()
   meal: Meal;
 }

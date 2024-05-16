@@ -26,9 +26,8 @@ export class MealRepository {
     return meals;
   }
 
-  async createMeal(name: string, order: number): Promise<Meal> {
-    const meal = this.mealRepository.create({ name, order });
-    return this.mealRepository.save(meal);
+  async createMeal(meal: Partial<Meal>[]): Promise<Meal[]> {
+    return await this.mealRepository.save(meal);
   }
 
   async createFood(

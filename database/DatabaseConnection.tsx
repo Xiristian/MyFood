@@ -1,3 +1,4 @@
+import * as SQLite from 'expo-sqlite/legacy';
 import { Text, View } from "@/components/Themed";
 import React, {
   createContext,
@@ -7,10 +8,14 @@ import React, {
   useState,
 } from "react";
 import { DataSource } from "typeorm";
-//import { ExampleRepository } from "./repositories/ExampleRepository";
+import { FoodRepository } from "./repositories/FoodRepository";
+import { MealRepository } from "./repositories/MealRepository";
+import { Meal } from './entities/meal-entity';
+import { Food } from './entities/food-entity';
 
 interface DatabaseConnectionContextData {
-  //exampleRepository: ExampleRepository;
+  foodRepository: FoodRepository;
+  mealReposiory: MealRepository;
   connection: DataSource | null;
 }
 
@@ -27,8 +32,8 @@ export const DatabaseConnectionProvider: React.FC<{
     const createdConnection = new DataSource({
       type: "expo",
       database: "myfood.db",
-      driver: require("expo-sqlite"),
-      entities: ["./entities/*.ts"],
+      driver: SQLite,
+      entities: [Meal, Food],
       synchronize: true,
     });
     setConnection(await createdConnection.initialize());
@@ -41,26 +46,27 @@ export const DatabaseConnectionProvider: React.FC<{
   }, [connect, connection]);
 
   if (!connection) {
-  return (
-  <View
-  style={{
-  backgroundColor: "#7a3687",
-  justifyContent: "center",
-  alignItems: "center",
-  flex: 1,
-  }}
-  >
+    return (
+      <View
+        style={{
+          backgroundColor: "#7a3687",
+          justifyContent: "center",
+          alignItems: "center",
+          flex: 1,
+        }}
+      >
         <Text lightColor="#eee" darkColor="rgba(255,255,255,0.1)">
-  Loading...
-  </Text>
-  </View>
-  );
+          Loading...
+        </Text>
+      </View>
+    );
   }
 
   return (
     <DatabaseConnectionContext.Provider
       value={{
-        //exampleRepository: new ExampleRepository(connection),
+        foodRepository: new FoodRepository(connection),
+        mealReposiory: new MealRepository(connection),
         connection: connection,
       }}
     >

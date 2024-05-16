@@ -3,14 +3,17 @@ import { Food } from './food-entity';
 import { BaseEntity } from './base-entity';
 
 @Entity()
-export class Meal extends BaseEntity{
-  @Column()
+export class Meal extends BaseEntity {
+  @Column('varchar')
   name: string;
 
-  @Column()
+  @Column('integer')
   order: number;
 
-  @OneToMany(() => Food, food => food.meal, { cascade: true })
+  @Column('varchar')
+  iconName: string;
+
+  @OneToMany('Food', 'meal', { cascade: true })
   @JoinColumn()
   foods: Food[];
 }
