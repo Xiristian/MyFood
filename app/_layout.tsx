@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
   DarkTheme,
@@ -11,6 +12,7 @@ import { useEffect } from "react";
 
 import { useColorScheme } from "@/components/useColorScheme";
 import { DatabaseConnectionProvider } from "@/database/DatabaseConnection";
+import React from "react";
 
 export {
   // Catch any errors thrown by the Layout component.

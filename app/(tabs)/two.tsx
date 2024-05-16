@@ -1,73 +1,99 @@
-import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, FlatList, View } from 'react-native';
-import { Text } from '@/components/Themed';
+import React, { useCallback, useState } from 'react';
+import { StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { Text, View } from '@/components/Themed';
 import { LuSunrise, LuCoffee, LuSun, LuMoon, LuCamera, LuPencil } from "react-icons/lu";
 import { RiArrowDropRightFill, RiArrowDropDownFill } from "react-icons/ri";
+import { Meal } from '@/database/entities/meal-entity';
+import { useDatabaseConnection } from '@/database/DatabaseConnection';
+import { useFocusEffect } from 'expo-router';
+
+interface ItemMeal extends Meal {
+  isExpanded?: Boolean;
+}
 
 export default function TabTwoScreen() {
-  const initialData = [
-    { id: '1', text: 'Desjejum', iconName: 'sunrise', isExpanded: false },
-    { id: '2', text: 'Café da manhã', iconName: 'coffee', isExpanded: false },
-    { id: '3', text: 'Almoço', iconName: 'sun', isExpanded: false },
-    { id: '4', text: 'Café da tarde', iconName: 'coffee', isExpanded: false },
-    { id: '5', text: 'Jantar', iconName: 'moon', isExpanded: false },
+  const initialData: ItemMeal[] = [
+    { id: 1, name: 'Desjejum', iconName: 'sunrise', order: 0, foods: [] },
+    { id: 2, name: 'Café da manhã', iconName: 'coffee', order: 0, foods: [] },
+    { id: 3, name: 'Almoço', iconName: 'sun', order: 0, foods: [] },
+    { id: 4, name: 'Café da tarde', iconName: 'coffee', order: 0, foods: [] },
+    { id: 5, name: 'Jantar', iconName: 'moon', order: 0, foods: [] },
   ];
 
-  const [data, setData] = useState(initialData);
+  const { mealReposiory } = useDatabaseConnection()
 
-  const toggleExpansion = (id) => {
-    setData(data.map(item => {
-      if (item.id === id) {
-        return { ...item, isExpanded: !item.isExpanded };
-      }
-      return item;
-    }));
+  const [data, setData] = useState<ItemMeal[]>([]);
+
+  async function loadData() {
+    let meals = await mealReposiory.findAll();
+    if (!meals || meals.length === 0)
+      meals = await mealReposiory.createMeal(initialData);
+    console.log(meals)
+    setData(meals)
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      loadData()
+    }, [])
+  );
+
+  const toggleExpansion = (id: number) => {
+    if (data)
+      setData(data.map(item => {
+        if (item.id === id) {
+          return { ...item, isExpanded: !item.isExpanded };
+        }
+        return item;
+      }));
   };
 
-  const renderItem = ({ item }) => {
-    let iconComponent;
-    if (item.iconName === 'sunrise') {
-      iconComponent = <LuSunrise name="sunrise" size={24} color="#76A689" style={styles.icon} />;
-    } else if (item.iconName === 'coffee') {
-      iconComponent = <LuCoffee name="coffee" size={24} color="#76A689" style={styles.icon} />;
-    } else if (item.iconName === 'sun') {
-      iconComponent = <LuSun name="sun" size={24} color="#76A689" style={styles.icon} />;
-    } else if (item.iconName === 'moon') {
-      iconComponent = <LuMoon name="moon" size={24} color="#76A689" style={styles.icon} />;
+  function IconComponent({ iconName }: { iconName: string }) {
+    if (iconName === 'sunrise') {
+      return <LuSunrise name="sunrise" size={24} color="#76A689" style={styles.icon} />;
+    } else if (iconName === 'coffee') {
+      return <LuCoffee name="coffee" size={24} color="#76A689" style={styles.icon} />;
+    } else if (iconName === 'sun') {
+      return <LuSun name="sun" size={24} color="#76A689" style={styles.icon} />;
+    } else if (iconName === 'moon') {
+      return <LuMoon name="moon" size={24} color="#76A689" style={styles.icon} />;
     } else {
-      iconComponent = null;
+      return null;
     }
+  }
 
-    const arrowIcon = item.isExpanded ? (
-      <RiArrowDropDownFill name="arrow-bottom" size={24} color="#76A689" style={styles.icon} />
-    ) : (
-      <RiArrowDropRightFill name="arrow-right" size={24} color="#76A689" style={styles.icon} />
-    );
+  const RenderItem = ({ item }: { item: ItemMeal }) => {
+    function ArrowIcon() {
+      if (item.isExpanded)
+        return <RiArrowDropDownFill name="arrow-bottom" size={24} color="#76A689" style={styles.icon} />
+      else
+        return <RiArrowDropRightFill name="arrow-right" size={24} color="#76A689" style={styles.icon} />
+    }
 
     return (
       <View>
         <View style={styles.listItem}>
-          {iconComponent}
-          <Text numberOfLines={1} style={styles.itemText}>{item.text}</Text>
+          {/* <IconComponent iconName={item.iconName} /> */}
+          <Text numberOfLines={1} style={styles.itemText}>{item.name}</Text>
           <TouchableOpacity onPress={() => toggleExpansion(item.id)}>
-            {arrowIcon}
+            {/* <ArrowIcon /> */}
           </TouchableOpacity>
         </View>
-        {item.isExpanded && renderExpandedContent()}
+        {item.isExpanded ? <RenderExpandedContent /> : null}
       </View>
     );
   };
 
-  const renderExpandedContent = () => (
+  const RenderExpandedContent = () => (
     <View style={styles.expandedContent}>
       <View style={styles.expandedContentIconsRow}>
-        <TouchableOpacity onPress={() => {/* Adicione a função do primeiro ícone */}}>
+        <TouchableOpacity onPress={() => {/* Adicione a função do primeiro ícone */ }}>
           <View style={styles.iconWithText}>
             <LuCamera name="camera" size={24} color="#76A689" style={styles.icon} />
             <Text style={styles.iconDescription}>Fotografar</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {/* Adicione a função do segundo ícone */}}>
+        <TouchableOpacity onPress={() => {/* Adicione a função do segundo ícone */ }}>
           <View style={styles.iconWithText}>
             <LuPencil name="pencil" size={24} color="#76A689" style={styles.icon} />
             <Text style={styles.iconDescription}>Descrever</Text>
@@ -78,17 +104,17 @@ export default function TabTwoScreen() {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" >
       <Text style={styles.title}>Minhas refeições</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <View style={styles.listContainer}>
         <FlatList
           data={data}
-          keyExtractor={item => item.id}
-          renderItem={renderItem}
+          keyExtractor={item => item.id.toString()}
+          renderItem={item => <RenderItem item={item.item} />}
         />
       </View>
-    </View>
+    </View >
   );
 }
 
@@ -97,7 +123,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFFCEB',
   },
   title: {
     fontSize: 20,
@@ -140,7 +165,7 @@ const styles = StyleSheet.create({
   },
   expandedContentIconsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between', 
+    justifyContent: 'space-between',
   },
   iconWithText: {
     flexDirection: 'row',

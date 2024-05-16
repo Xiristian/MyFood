@@ -18,7 +18,7 @@ export const readFoodsFromImage = async (uri: string): Promise<ResultDTO> => {
       { image },
       { timeout: 20000 }
     );
-
+    
     return { error: data.error, foods: data.foods };
   } catch (error) {
     console.error(error);
