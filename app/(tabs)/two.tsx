@@ -12,6 +12,7 @@ interface ItemMeal extends Meal {
 }
 
 export default function TabTwoScreen() {
+  const { mealReposiory } = useDatabaseConnection()
   const initialData: ItemMeal[] = [
     { id: 1, name: 'Desjejum', iconName: 'sunrise', order: 0, foods: [] },
     { id: 2, name: 'Café da manhã', iconName: 'coffee', order: 0, foods: [] },
@@ -20,15 +21,12 @@ export default function TabTwoScreen() {
     { id: 5, name: 'Jantar', iconName: 'moon', order: 0, foods: [] },
   ];
 
-  const { mealReposiory } = useDatabaseConnection()
-
   const [data, setData] = useState<ItemMeal[]>([]);
 
   async function loadData() {
     let meals = await mealReposiory.findAll();
     if (!meals || meals.length === 0)
       meals = await mealReposiory.createMeal(initialData);
-    console.log(meals)
     setData(meals)
   }
 
