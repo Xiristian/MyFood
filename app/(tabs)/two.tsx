@@ -1,8 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { Text, View } from '@/components/Themed';
-import { LuSunrise, LuCoffee, LuSun, LuMoon, LuCamera, LuPencil } from "react-icons/lu";
-import { RiArrowDropRightFill, RiArrowDropDownFill } from "react-icons/ri";
+import { MaterialCommunityIcons, FontAwesome, Feather } from '@expo/vector-icons';
 import { Meal } from '@/database/entities/meal-entity';
 import { useDatabaseConnection } from '@/database/DatabaseConnection';
 import { useFocusEffect } from 'expo-router';
@@ -12,7 +11,7 @@ interface ItemMeal extends Meal {
 }
 
 export default function TabTwoScreen() {
-  const { mealReposiory } = useDatabaseConnection()
+  const { mealReposiory } = useDatabaseConnection();
   const initialData: ItemMeal[] = [
     { id: 1, name: 'Desjejum', iconName: 'sunrise', order: 0, foods: [] },
     { id: 2, name: 'Café da manhã', iconName: 'coffee', order: 0, foods: [] },
@@ -27,12 +26,12 @@ export default function TabTwoScreen() {
     let meals = await mealReposiory.findAll();
     if (!meals || meals.length === 0)
       meals = await mealReposiory.createMeal(initialData);
-    setData(meals)
+    setData(meals);
   }
 
   useFocusEffect(
     useCallback(() => {
-      loadData()
+      loadData();
     }, [])
   );
 
@@ -48,13 +47,13 @@ export default function TabTwoScreen() {
 
   function IconComponent({ iconName }: { iconName: string }) {
     if (iconName === 'sunrise') {
-      return <LuSunrise name="sunrise" size={24} color="#76A689" style={styles.icon} />;
+      return <Feather name="sunrise" size={24} color="#76A689" style={styles.icon} />;
     } else if (iconName === 'coffee') {
-      return <LuCoffee name="coffee" size={24} color="#76A689" style={styles.icon} />;
+      return <Feather name="coffee" size={24} color="#76A689" style={styles.icon} />;
     } else if (iconName === 'sun') {
-      return <LuSun name="sun" size={24} color="#76A689" style={styles.icon} />;
+      return <Feather name="sun" size={24} color="#76A689" style={styles.icon} />;
     } else if (iconName === 'moon') {
-      return <LuMoon name="moon" size={24} color="#76A689" style={styles.icon} />;
+      return <Feather name="moon" size={24} color="#76A689" style={styles.icon} />;
     } else {
       return null;
     }
@@ -63,18 +62,18 @@ export default function TabTwoScreen() {
   const RenderItem = ({ item }: { item: ItemMeal }) => {
     function ArrowIcon() {
       if (item.isExpanded)
-        return <RiArrowDropDownFill name="arrow-bottom" size={24} color="#76A689" style={styles.icon} />
+        return <Feather name="chevron-down" size={24} color="#76A689" style={styles.icon} />;
       else
-        return <RiArrowDropRightFill name="arrow-right" size={24} color="#76A689" style={styles.icon} />
+        return <Feather name="chevron-right" size={24} color="#76A689" style={styles.icon} />;
     }
 
     return (
-      <View>
-        <View style={styles.listItem}>
-          {/* <IconComponent iconName={item.iconName} /> */}
+      <View lightColor="#FFFCEB" darkColor="#3C3C3C">
+        <View style={styles.listItem} lightColor="#FFFCEB" darkColor="#3C3C3C">
+          <IconComponent iconName={item.iconName} />
           <Text numberOfLines={1} style={styles.itemText}>{item.name}</Text>
           <TouchableOpacity onPress={() => toggleExpansion(item.id)}>
-            {/* <ArrowIcon /> */}
+            <ArrowIcon />
           </TouchableOpacity>
         </View>
         {item.isExpanded ? <RenderExpandedContent /> : null}
@@ -83,17 +82,17 @@ export default function TabTwoScreen() {
   };
 
   const RenderExpandedContent = () => (
-    <View style={styles.expandedContent}>
-      <View style={styles.expandedContentIconsRow}>
+    <View style={styles.expandedContent} >
+      <View style={styles.expandedContentIconsRow} lightColor="#FFFCEB" darkColor="#3C3C3C">
         <TouchableOpacity onPress={() => {/* Adicione a função do primeiro ícone */ }}>
-          <View style={styles.iconWithText}>
-            <LuCamera name="camera" size={24} color="#76A689" style={styles.icon} />
+          <View style={styles.iconWithText} lightColor="#FFFCEB" darkColor="#3C3C3C">
+            <Feather name="camera" size={24} color="#76A689" style={styles.icon} />
             <Text style={styles.iconDescription}>Fotografar</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => {/* Adicione a função do segundo ícone */ }}>
-          <View style={styles.iconWithText}>
-            <LuPencil name="pencil" size={24} color="#76A689" style={styles.icon} />
+          <View style={styles.iconWithText} lightColor="#FFFCEB" darkColor="#3C3C3C">
+            <Feather name="edit" size={24} color="#76A689" style={styles.icon} />
             <Text style={styles.iconDescription}>Descrever</Text>
           </View>
         </TouchableOpacity>
@@ -102,17 +101,16 @@ export default function TabTwoScreen() {
   );
 
   return (
-    <View style={styles.container} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" >
+    <View style={styles.container} lightColor="#FFFCEB" darkColor="#3C3C3C">
       <Text style={styles.title}>Minhas refeições</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <View style={styles.listContainer}>
+      <View style={styles.listContainer} lightColor="#FFFCEB" darkColor="#3C3C3C">
         <FlatList
           data={data}
           keyExtractor={item => item.id.toString()}
           renderItem={item => <RenderItem item={item.item} />}
         />
       </View>
-    </View >
+    </View>
   );
 }
 
@@ -135,7 +133,7 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   listContainer: {
-    flex: 1,
+    flexGrow: 1,
     width: '90%',
     marginHorizontal: '5%',
   },
@@ -143,14 +141,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#D5DFD9',
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#76A689',
   },
   itemText: {
     marginLeft: 10,
     fontSize: 16,
     flex: 1,
-    color: '#76A689'
+    color: '#547260'
   },
   icon: {
     marginRight: 10,
