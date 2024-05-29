@@ -1,70 +1,111 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import { Tabs } from 'expo-router';
+import { Pressable, View, StyleSheet, PressableProps } from 'react-native';
 
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
   color: string;
+  size?: number;
 }) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
+  return <FontAwesome size={props.size ?? 28} {...props} />;
 }
 
-function ForkIcon(){
-  return <MaterialCommunityIcons name="silverware-fork-knife" size={24} color="black" />;
+interface CustomTabBarButtonProps extends PressableProps {
+  children: React.ReactNode;
+}
+
+function CustomTabBarButton({ children, ...props }: CustomTabBarButtonProps) {
+  return (
+    <Pressable {...props} style={styles.button}>
+      {children}
+    </Pressable>
+  );
 }
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="two"
-        options={{
-          title: 'Refeições',
-          tabBarIcon: () => <ForkIcon/>,
-        }}
-      />
-      <Tabs.Screen
-        name="teste"
-        options={{
-          title: 'Tab Teste',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      />
-    </Tabs>
+    <View style={styles.container}>
+      <Tabs
+        screenOptions={{
+          tabBarShowLabel: false,
+          tabBarButton: (props) => <CustomTabBarButton {...props} />,
+          tabBarStyle: styles.tabBar,
+        }}>
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: 'Perfil',
+            tabBarIcon: () => (
+              <TabBarIcon name="user" color="white" size={24} />
+            ),
+            tabBarButton: (props) => (
+              <CustomTabBarButton {...props}>
+                <View style={[styles.iconContainer, { backgroundColor: '#76A689' }]}>
+                  <FontAwesome name="user" size={30} color="white" />
+                </View>
+              </CustomTabBarButton>
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="two"
+          options={{
+            title: 'Refeições',
+            tabBarIcon: () => (
+              <MaterialCommunityIcons name="carrot" size={24} color="white" />
+            ),
+            tabBarButton: (props) => (
+              <CustomTabBarButton {...props}>
+                <View style={[styles.iconContainer, { backgroundColor: '#547260' }]}>
+                  <MaterialCommunityIcons name="carrot" size={30} color="white" />
+                </View>
+              </CustomTabBarButton>
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="teste"
+          options={{
+            title: 'Escanear',
+            tabBarIcon: () => (
+              <MaterialCommunityIcons name="camera" size={24} color="white" />
+            ),
+            tabBarButton: (props) => (
+              <CustomTabBarButton {...props}>
+                <View style={[styles.iconContainer, { backgroundColor: '#76A689' }]}>
+                  <MaterialCommunityIcons name="camera" size={30} color="white" />
+                </View>
+              </CustomTabBarButton>
+            ),
+          }}
+        />
+      </Tabs>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+    backgroundColor: '#FFFCEB',
+  },
+  tabBar: {
+    backgroundColor: '#FFFCEB',
+    borderTopWidth: 0,
+    height: 60,
+  },
+  button: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconContainer: {
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

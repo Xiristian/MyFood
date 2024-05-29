@@ -1,10 +1,11 @@
 import React, { useCallback, useState } from 'react';
 import { StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { Text, View } from '@/components/Themed';
-import { MaterialCommunityIcons, FontAwesome, Feather } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { Meal } from '@/database/entities/meal-entity';
 import { useDatabaseConnection } from '@/database/DatabaseConnection';
 import { useFocusEffect } from 'expo-router';
+import Header from '@/components/Header';
 
 interface ItemMeal extends Meal {
   isExpanded?: Boolean;
@@ -102,6 +103,7 @@ export default function TabTwoScreen() {
 
   return (
     <View style={styles.container} lightColor="#FFFCEB" darkColor="#3C3C3C">
+      <Header title={''}/>
       <Text style={styles.title}>Minhas refeições</Text>
       <View style={styles.listContainer} lightColor="#FFFCEB" darkColor="#3C3C3C">
         <FlatList
@@ -146,7 +148,7 @@ const styles = StyleSheet.create({
   },
   itemText: {
     marginLeft: 10,
-    fontSize: 16,
+    fontSize: 18,
     flex: 1,
     color: '#547260'
   },
@@ -169,7 +171,7 @@ const styles = StyleSheet.create({
   },
   iconDescription: {
     marginLeft: 5,
-    fontSize: 14,
+    fontSize: 16,
     color: '#76A689'
   },
 });

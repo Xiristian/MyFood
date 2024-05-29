@@ -1,77 +1,108 @@
-import React from 'react';
-import { StyleSheet } from 'react-native';
-
-import { ExternalLink } from './ExternalLink';
-import { MonoText } from './StyledText';
-import { Text, View } from './Themed';
-
-import Colors from '@/constants/Colors';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, Pressable, Image } from 'react-native';
+import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function EditScreenInfo({ path }: { path: string }) {
+  const [image, setImage] = useState<string | null>(null);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
   return (
-    <View>
-      <View style={styles.getStartedContainer}>
-        <Text
-          style={styles.getStartedText}
-          lightColor="rgba(0,0,0,0.8)"
-          darkColor="rgba(255,255,255,0.8)">
-          Open up the code for this screen:
-        </Text>
-
-        <View
-          style={[styles.codeHighlightContainer, styles.homeScreenFilename]}
-          darkColor="rgba(255,255,255,0.05)"
-          lightColor="rgba(0,0,0,0.05)">
-          <MonoText>{path}</MonoText>
+    <View style={styles.container}>
+      <Pressable style={styles.imageContainer} onPress={pickImage}>
+        {image ? (
+          <Image source={{ uri: image }} style={styles.image} />
+        ) : (
+          <FontAwesome name="camera" size={40} color="#547260" />
+        )}
+      </Pressable>
+      <View style={styles.userInfo}>
+        <Text style={styles.userName}>Julia de Luca</Text>
+        <Pressable onPress={() => setDropdownVisible(!dropdownVisible)}>
+          <FontAwesome name={dropdownVisible ? "chevron-up" : "chevron-down"} size={24} color="#435B4D" />
+        </Pressable>
+      </View>
+      {dropdownVisible && (
+        <View style={styles.dropdown}>
+          <View style={styles.dropdownItem}>
+            <MaterialCommunityIcons name="view-dashboard" size={24} color="#435B4D" />
+            <Text style={styles.dropdownItemText}>Dashboard</Text>
+          </View>
+          <View style={styles.dropdownItem}>
+            <MaterialCommunityIcons name="account-network" size={24} color="#435B4D" />
+            <Text style={styles.dropdownItemText}>Minha Rede</Text>
+          </View>
+          <View style={styles.dropdownItem}>
+            <MaterialCommunityIcons name="bell" size={24} color="#435B4D" />
+            <Text style={styles.dropdownItemText}>Notificações</Text>
+          </View>
         </View>
-
-        <Text
-          style={styles.getStartedText}
-          lightColor="rgba(0,0,0,0.8)"
-          darkColor="rgba(255,255,255,0.8)">
-          Change any of the text, save the file, and your app will automatically update.
-        </Text>
-      </View>
-
-      <View style={styles.helpContainer}>
-        <ExternalLink
-          style={styles.helpLink}
-          href="https://docs.expo.io/get-started/create-a-new-app/#opening-the-app-on-your-phonetablet">
-          <Text style={styles.helpLinkText} lightColor={Colors.light.tint}>
-            Tap here if your app doesn't automatically update after making changes
-          </Text>
-        </ExternalLink>
-      </View>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  getStartedContainer: {
+  container: {
+    width:'100%',
+    height:'auto',
+    flex: 1,
+    backgroundColor: '#FFFCEB',
+  },
+  imageContainer: {
+    marginTop: 20,
+    alignSelf: 'center',
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: '#FFFCEB',
     alignItems: 'center',
-    marginHorizontal: 50,
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#547260',
   },
-  homeScreenFilename: {
-    marginVertical: 7,
+  image: {
+    width: 150,
+    height: 150,
+    borderRadius: 50,
   },
-  codeHighlightContainer: {
-    borderRadius: 3,
-    paddingHorizontal: 4,
-  },
-  getStartedText: {
-    fontSize: 17,
-    lineHeight: 24,
-    textAlign: 'center',
-  },
-  helpContainer: {
-    marginTop: 15,
-    marginHorizontal: 20,
+  userInfo: {
+    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
     alignItems: 'center',
   },
-  helpLink: {
-    paddingVertical: 15,
+  userName: {
+    fontSize: 24,
+    fontWeight:'bold',
+    color: '#435B4D',
   },
-  helpLinkText: {
-    textAlign: 'center',
+  dropdown: {
+    marginTop: 10,
+    paddingHorizontal: 20,
   },
+  dropdownItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  dropdownItemText: {
+    marginLeft: 10,
+    fontSize: 20,
+    color: '#435B4D',
+  }
 });
