@@ -1,17 +1,18 @@
 import React, { useCallback, useState } from 'react';
 import { StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { Text, View } from '@/components/Themed';
-import { MaterialCommunityIcons, FontAwesome, Feather } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { Meal } from '@/database/entities/meal-entity';
 import { useDatabaseConnection } from '@/database/DatabaseConnection';
-import { useFocusEffect } from 'expo-router';
+import { Link, router, useFocusEffect } from 'expo-router';
+import Header from '@/components/Header';
 
 interface ItemMeal extends Meal {
   isExpanded?: Boolean;
 }
 
 export default function TabTwoScreen() {
-  const { mealReposiory } = useDatabaseConnection();
+  const { mealRepository } = useDatabaseConnection();
   const initialData: ItemMeal[] = [
     { id: 1, name: 'Desjejum', iconName: 'sunrise', order: 0, foods: [] },
     { id: 2, name: 'Café da manhã', iconName: 'coffee', order: 0, foods: [] },
@@ -23,9 +24,9 @@ export default function TabTwoScreen() {
   const [data, setData] = useState<ItemMeal[]>([]);
 
   async function loadData() {
-    let meals = await mealReposiory.findAll();
+    let meals = await mealRepository.findAll();
     if (!meals || meals.length === 0)
-      meals = await mealReposiory.createMeal(initialData);
+      meals = await mealRepository.createMeal(initialData);
     setData(meals);
   }
 
@@ -84,13 +85,13 @@ export default function TabTwoScreen() {
   const RenderExpandedContent = () => (
     <View style={styles.expandedContent} >
       <View style={styles.expandedContentIconsRow} lightColor="#FFFCEB" darkColor="#3C3C3C">
-        <TouchableOpacity onPress={() => {/* Adicione a função do primeiro ícone */ }}>
+        <TouchableOpacity onPress={() => {}}>
           <View style={styles.iconWithText} lightColor="#FFFCEB" darkColor="#3C3C3C">
             <Feather name="camera" size={24} color="#76A689" style={styles.icon} />
             <Text style={styles.iconDescription}>Fotografar</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {/* Adicione a função do segundo ícone */ }}>
+        <TouchableOpacity onPress={() => {router.navigate('description-screen')}}>
           <View style={styles.iconWithText} lightColor="#FFFCEB" darkColor="#3C3C3C">
             <Feather name="edit" size={24} color="#76A689" style={styles.icon} />
             <Text style={styles.iconDescription}>Descrever</Text>
@@ -102,6 +103,7 @@ export default function TabTwoScreen() {
 
   return (
     <View style={styles.container} lightColor="#FFFCEB" darkColor="#3C3C3C">
+      <Header title={''} />
       <Text style={styles.title}>Minhas refeições</Text>
       <View style={styles.listContainer} lightColor="#FFFCEB" darkColor="#3C3C3C">
         <FlatList
@@ -146,7 +148,7 @@ const styles = StyleSheet.create({
   },
   itemText: {
     marginLeft: 10,
-    fontSize: 16,
+    fontSize: 18,
     flex: 1,
     color: '#547260'
   },
@@ -169,7 +171,7 @@ const styles = StyleSheet.create({
   },
   iconDescription: {
     marginLeft: 5,
-    fontSize: 14,
+    fontSize: 16,
     color: '#76A689'
   },
 });

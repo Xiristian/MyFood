@@ -1,8 +1,9 @@
-import { Image, StyleSheet } from "react-native";
+import { Image, StyleSheet, ScrollView } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { useState } from "react";
 import ImagePicker from "@/components/ImagePicker";
 import { FoodDTO } from "@/backend/FoodDTO";
+import Header from '@/components/Header';
 
 export default function TabTesteScreen() {
   const [image, setImage] = useState("");
@@ -11,28 +12,30 @@ export default function TabTesteScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab Teste</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
-      <ImagePicker
-        setImage={setImage}
-        setFoods={setFoods}
-        setError={setError}
-      />
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
-      {error ? (
-        <Text>{error}</Text>
-      ) : foods ? (
-        foods.map((food) => {
-          return (
-            <>
+      <View style={styles.headerContainer}>
+        <Header title={''} />
+      </View>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <View
+          style={styles.separator}
+          lightColor="#eee"
+          darkColor="rgba(255,255,255,0.1)"
+        />
+        <ImagePicker
+          setImage={setImage}
+          setFoods={setFoods}
+          setError={setError}
+        />
+        <View
+          style={styles.separator}
+          lightColor="#eee"
+          darkColor="rgba(255,255,255,0.1)"
+        />
+        {error ? (
+          <Text>{error}</Text>
+        ) : foods ? (
+          foods.map((food) => (
+            <View key={food.name}>
               <Text>
                 {food.name} {food.quantity} {food.unit}
               </Text>
@@ -43,18 +46,18 @@ export default function TabTesteScreen() {
                     : `Recheio: ${food.filling.join(", ")}`
                   : "Recheio não identificado"}
               </Text>
-            </>
-          );
-        })
-      ) : null}
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
-      {image ? (
-        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-      ) : null}
+            </View>
+          ))
+        ) : null}
+        <View
+          style={styles.separator}
+          lightColor="#eee"
+          darkColor="rgba(255,255,255,0.1)"
+        />
+        {image ? (
+          <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+        ) : null}
+      </ScrollView>
     </View>
   );
 }
@@ -62,6 +65,17 @@ export default function TabTesteScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: 'relative',
+  },
+  headerContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+  },
+  scrollViewContent: {
+    paddingTop: 60, // Ajuste conforme a altura do header
     alignItems: "center",
     justifyContent: "center",
   },
