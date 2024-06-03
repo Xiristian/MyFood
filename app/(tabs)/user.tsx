@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Pressable, Image } from 'react-native';
+import { Pressable, StyleSheet, Image } from 'react-native';
+import { Text, View } from '@/components/Themed';
+import Header from '@/components/Header';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 
-export default function EditScreenInfo({ path }: { path: string }) {
+
+export default function TabOneScreen() {
   const [image, setImage] = useState<string | null>(null);
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
@@ -22,6 +25,8 @@ export default function EditScreenInfo({ path }: { path: string }) {
 
   return (
     <View style={styles.container}>
+      <Header title="" />
+      <View style={styles.container}>
       <Pressable style={styles.imageContainer} onPress={pickImage}>
         {image ? (
           <Image source={{ uri: image }} style={styles.image} />
@@ -52,6 +57,7 @@ export default function EditScreenInfo({ path }: { path: string }) {
         </View>
       )}
     </View>
+    </View>
   );
 }
 
@@ -80,6 +86,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   userInfo: {
+    backgroundColor:'#FFFCEB',
     marginTop: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -92,10 +99,12 @@ const styles = StyleSheet.create({
     color: '#435B4D',
   },
   dropdown: {
+    backgroundColor:'#FFFCEB',
     marginTop: 10,
     paddingHorizontal: 20,
   },
   dropdownItem: {
+    backgroundColor:'#FFFCEB',
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,

@@ -30,11 +30,12 @@ export default function TabLayout() {
       <Tabs
         screenOptions={{
           tabBarShowLabel: false,
+          headerShown: false,
           tabBarButton: (props) => <CustomTabBarButton {...props} />,
           tabBarStyle: styles.tabBar,
         }}>
         <Tabs.Screen
-          name="index"
+          name="user"
           options={{
             title: 'Perfil',
             tabBarIcon: () => (
@@ -50,7 +51,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="two"
+          name="meals"
           options={{
             title: 'Refeições',
             tabBarIcon: () => (

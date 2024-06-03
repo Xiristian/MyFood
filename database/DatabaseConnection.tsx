@@ -15,7 +15,7 @@ import { Food } from './entities/food-entity';
 
 interface DatabaseConnectionContextData {
   foodRepository: FoodRepository;
-  mealReposiory: MealRepository;
+  mealRepository: MealRepository;
   connection: DataSource | null;
 }
 
@@ -66,7 +66,7 @@ export const DatabaseConnectionProvider: React.FC<{
     <DatabaseConnectionContext.Provider
       value={{
         foodRepository: new FoodRepository(connection),
-        mealReposiory: new MealRepository(connection),
+        mealRepository: new MealRepository(connection),
         connection: connection,
       }}
     >
