@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   tabBar: {
     backgroundColor: '#FFFCEB',
     borderTopWidth: 0,
-    height: 60,
+    height: 100,
   },
   button: {
     flex: 1,

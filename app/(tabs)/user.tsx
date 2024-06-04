@@ -23,9 +23,9 @@ export default function TabOneScreen() {
   };
 
   return (
-    <View style={styles.container} lightColor="#FFFCEB" darkColor="#3C3C3C">
+    <View style={styles.container}>
       <Header title="" />
-      <View style={styles.container}>
+      <View style={styles.container} lightColor="#FFFCEB" darkColor="#3C3C3C">
         <Pressable style={styles.imageContainer} onPress={pickImage}>
           {image ? (
             <Image source={{ uri: image }} style={styles.image} />
@@ -33,23 +33,23 @@ export default function TabOneScreen() {
             <FontAwesome name="camera" size={40} color="#547260" />
           )}
         </Pressable>
-        <View style={styles.userInfo}>
+        <View style={styles.userInfo} lightColor="#FFFCEB" darkColor="#3C3C3C">
           <Text style={styles.userName}>Julia de Luca</Text>
           <Pressable onPress={() => setDropdownVisible(!dropdownVisible)}>
             <FontAwesome name={dropdownVisible ? "chevron-up" : "chevron-down"} size={24} color="#435B4D" />
           </Pressable>
         </View>
         {dropdownVisible && (
-          <View style={styles.dropdown}>
-            <View style={styles.dropdownItem}>
+          <View style={styles.dropdown} lightColor="#FFFCEB" darkColor="#3C3C3C">
+            <View style={styles.dropdownItem }lightColor="#FFFCEB" darkColor="#3C3C3C">
               <MaterialCommunityIcons name="view-dashboard" size={24} color="#435B4D" />
               <Text style={styles.dropdownItemText}>Dashboard</Text>
             </View>
-            <View style={styles.dropdownItem}>
+            <View style={styles.dropdownItem} lightColor="#FFFCEB" darkColor="#3C3C3C">
               <MaterialCommunityIcons name="account-network" size={24} color="#435B4D" />
               <Text style={styles.dropdownItemText}>Minha Rede</Text>
             </View>
-            <View style={styles.dropdownItem}>
+            <View style={styles.dropdownItem} lightColor="#FFFCEB" darkColor="#3C3C3C">
               <MaterialCommunityIcons name="bell" size={24} color="#435B4D" />
               <Text style={styles.dropdownItemText}>Notificações</Text>
             </View>
