@@ -159,6 +159,8 @@ const styles = StyleSheet.create({
   },
   selectedItem: {
     marginTop:10,
+    marginRight:10,
+    marginLeft:10,
     borderColor: '#76A689',
     borderWidth: 2,
     borderRadius: 10,
