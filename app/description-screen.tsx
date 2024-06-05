@@ -3,7 +3,6 @@ import { StyleSheet, TouchableOpacity, FlatList, View, Appearance } from 'react-
 import { Text } from '@/components/Themed';
 import Header from '@/components/Header';
 import { Feather } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
 import SearchBar from '@/components/SearchBar';
 import { router } from 'expo-router';
 
@@ -24,17 +23,21 @@ interface FoodCardProps {
   item: FoodItem;
   index: number; 
   onSelectItem: (id: number) => void;
+  isSelected: boolean;
 }
 
-const FoodCard: React.FC<FoodCardProps> = ({ item, index, onSelectItem }) => {
+const FoodCard: React.FC<FoodCardProps> = ({ item, index, onSelectItem, isSelected }) => {
   const opacity = 0.8;
   const iconSize = 21; 
-  const appearance = Appearance.getColorScheme(); // Detecta o esquema de cores do dispositivo
+  const appearance = Appearance.getColorScheme(); 
 
   return (
     <>
       <View style={[styles.separator, { backgroundColor: appearance === 'dark' ? '#333333' : '#E3E3E3' }]} />
-      <TouchableOpacity style={styles.foodItem} onPress={() => onSelectItem(item.id)}>
+      <TouchableOpacity
+        style={[styles.foodItem, isSelected && styles.selectedItem]}
+        onPress={() => onSelectItem(item.id)}
+      >
         <View style={styles.numberContainer}>
           <Text style={styles.numberText}>{index + 1}</Text>
         </View>
@@ -57,11 +60,10 @@ const FoodCard: React.FC<FoodCardProps> = ({ item, index, onSelectItem }) => {
 };
 
 export default function DescriptionScreen() {
-  const navigation = useNavigation();
   const [searchResults, setSearchResults] = useState<FoodItem[]>([]);
   const [allFoodData] = useState<FoodItem[]>(initialFoodData);
-  const [selectedItem, setSelectedItem] = useState<number | null>(null);
-  const appearance = Appearance.getColorScheme(); // Detecta o esquema de cores do dispositivo
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const appearance = Appearance.getColorScheme(); 
 
   function handleSearch(text: string): void {
     const filteredResults = allFoodData.filter(item =>
@@ -71,14 +73,21 @@ export default function DescriptionScreen() {
   }
 
   function handleSelectItem(id: number): void {
-    setSelectedItem(id);
+    setSelectedItems(prevSelectedItems =>
+      prevSelectedItems.includes(id)
+        ? prevSelectedItems.filter(item => item !== id)
+        : [...prevSelectedItems, id]
+    );
   }
 
-  function handleAddItem(): void {
-    if (selectedItem !== null) {
-      console.log(`Adicionar alimento com ID ${selectedItem} à refeição`);
-    }
+  function handleAddItems(): void {
+  if (selectedItems.length > 0) {
+    console.log(`Adicionar alimentos com IDs ${selectedItems} à refeição XXX`);//deve trazer o id da refeição, ver com o christian
+    // Em andamento...
+    router.back();
   }
+}
+
 
   return (
     <View style={[styles.container, { backgroundColor: appearance === 'dark' ? '#333333' : '#FFFCEB' }]}>
@@ -92,15 +101,20 @@ export default function DescriptionScreen() {
         data={searchResults}
         keyExtractor={item => item.id.toString()}
         renderItem={({ item, index }) => (
-          <FoodCard item={item} index={index} onSelectItem={handleSelectItem} />
+          <FoodCard
+            item={item}
+            index={index}
+            onSelectItem={handleSelectItem}
+            isSelected={selectedItems.includes(item.id)}
+          />
         )}
       />
       <View style={styles.bottomButtons}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={[styles.notFoundButton, { backgroundColor: appearance === 'dark' ? '#555555' : '#76A689' }]}>
-            <Text style={styles.buttonText}>Não encontrei meu alimento</Text>
+            <Text style={[styles.buttonText, {color: '#FFFFFF'}]}>Não encontrei meu alimento</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.addButton, { backgroundColor: appearance === 'dark' ? '#333333' : '#547260' }]} onPress={handleAddItem}>
+          <TouchableOpacity style={[styles.addButton, { backgroundColor: appearance === 'dark' ? '#333333' : '#547260' }]} onPress={handleAddItems}>
             <Text style={[styles.buttonText, { color: '#FFFFFF' }]}>Adicionar</Text>
           </TouchableOpacity>
         </View>
@@ -142,6 +156,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 10,
     paddingHorizontal: 15,
+  },
+  selectedItem: {
+    marginTop:10,
+    borderColor: '#76A689',
+    borderWidth: 2,
+    borderRadius: 10,
   },
   numberContainer: {
     alignItems: 'center',
