@@ -60,7 +60,7 @@ export default function TabLayout() {
             tabBarButton: (props) => (
               <CustomTabBarButton {...props}>
                 <View style={[styles.iconContainer, { backgroundColor: '#547260' }]}>
-                  <MaterialCommunityIcons name="carrot" size={30} color="white" />
+                  <MaterialCommunityIcons name="carrot" size={40} color="white" />
                 </View>
               </CustomTabBarButton>
             ),
