@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, FlatList, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, FlatList, View, Appearance } from 'react-native';
 import { Text } from '@/components/Themed';
 import Header from '@/components/Header';
 import { Feather } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
 import SearchBar from '@/components/SearchBar';
+import { router } from 'expo-router';
 
 interface FoodItem {
   id: number;
   name: string;
   calories: number;
-  quantity: string; // Renomeei para 'quantity'
+  quantity: string;
 }
 
 const initialFoodData: FoodItem[] = [
@@ -23,16 +23,21 @@ interface FoodCardProps {
   item: FoodItem;
   index: number; 
   onSelectItem: (id: number) => void;
+  isSelected: boolean;
 }
 
-const FoodCard: React.FC<FoodCardProps> = ({ item, index, onSelectItem }) => {
+const FoodCard: React.FC<FoodCardProps> = ({ item, index, onSelectItem, isSelected }) => {
   const opacity = 0.8;
   const iconSize = 21; 
+  const appearance = Appearance.getColorScheme(); 
 
   return (
     <>
-      <View style={styles.separator} />
-      <TouchableOpacity style={styles.foodItem} onPress={() => onSelectItem(item.id)}>
+      <View style={[styles.separator, { backgroundColor: appearance === 'dark' ? '#333333' : '#E3E3E3' }]} />
+      <TouchableOpacity
+        style={[styles.foodItem, isSelected && styles.selectedItem]}
+        onPress={() => onSelectItem(item.id)}
+      >
         <View style={styles.numberContainer}>
           <Text style={styles.numberText}>{index + 1}</Text>
         </View>
@@ -55,10 +60,10 @@ const FoodCard: React.FC<FoodCardProps> = ({ item, index, onSelectItem }) => {
 };
 
 export default function DescriptionScreen() {
-  const navigation = useNavigation();
   const [searchResults, setSearchResults] = useState<FoodItem[]>([]);
   const [allFoodData] = useState<FoodItem[]>(initialFoodData);
-  const [selectedItem, setSelectedItem] = useState<number | null>(null);
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const appearance = Appearance.getColorScheme(); 
 
   function handleSearch(text: string): void {
     const filteredResults = allFoodData.filter(item =>
@@ -68,37 +73,49 @@ export default function DescriptionScreen() {
   }
 
   function handleSelectItem(id: number): void {
-    setSelectedItem(id);
+    setSelectedItems(prevSelectedItems =>
+      prevSelectedItems.includes(id)
+        ? prevSelectedItems.filter(item => item !== id)
+        : [...prevSelectedItems, id]
+    );
   }
 
-  function handleAddItem(): void {
-    if (selectedItem !== null) {
-      console.log(`Adicionar alimento com ID ${selectedItem} à refeição`);
-    }
+  function handleAddItems(): void {
+  if (selectedItems.length > 0) {
+    console.log(`Adicionar alimentos com IDs ${selectedItems} à refeição XXX`);//deve trazer o id da refeição, ver com o christian
+    // Em andamento...
+    router.back();
   }
+}
+
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: appearance === 'dark' ? '#333333' : '#FFFCEB' }]}>
       <Header title={''} />
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
         <Feather name="arrow-left" size={24} style={styles.arrow} />
       </TouchableOpacity>
-      <Text style={styles.title}>Adicionar Alimentos</Text>
+      <Text style={[styles.title, { color: appearance === 'dark' ? '#FFFFFF' : '#547260' }]}>Adicionar Alimentos</Text>
       <SearchBar placeholder="Digite um alimento" onChangeText={handleSearch} />
       <FlatList
         data={searchResults}
         keyExtractor={item => item.id.toString()}
         renderItem={({ item, index }) => (
-          <FoodCard item={item} index={index} onSelectItem={handleSelectItem} />
+          <FoodCard
+            item={item}
+            index={index}
+            onSelectItem={handleSelectItem}
+            isSelected={selectedItems.includes(item.id)}
+          />
         )}
       />
       <View style={styles.bottomButtons}>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.notFoundButton}>
-            <Text style={styles.buttonText}>Não encontrei meu alimento</Text>
+          <TouchableOpacity style={[styles.notFoundButton, { backgroundColor: appearance === 'dark' ? '#555555' : '#76A689' }]}>
+            <Text style={[styles.buttonText, {color: '#FFFFFF'}]}>Não encontrei meu alimento</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.addButton} onPress={handleAddItem}>
-            <Text style={styles.buttonText}>Adicionar</Text>
+          <TouchableOpacity style={[styles.addButton, { backgroundColor: appearance === 'dark' ? '#333333' : '#547260' }]} onPress={handleAddItems}>
+            <Text style={[styles.buttonText, { color: '#FFFFFF' }]}>Adicionar</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -114,7 +131,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#547260',
     marginBottom: 10,
     marginTop: 20,
     textAlign: 'center',
@@ -125,12 +141,11 @@ const styles = StyleSheet.create({
     left: 10,
   },
   arrow: {
-    marginTop: 20,
+    marginTop: 40,
     color:'white'
   },
   separator: {
     height: 1,
-    backgroundColor: '#E3E3E3', // Cor do separator
     width: '80%',
     alignSelf: 'center',
     opacity: 0.8,
@@ -142,11 +157,20 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
   },
+  selectedItem: {
+    marginTop:10,
+    marginRight:10,
+    marginLeft:10,
+    borderColor: '#76A689',
+    borderWidth: 2,
+    borderRadius: 10,
+  },
   numberContainer: {
     alignItems: 'center',
     marginRight: 10,
   },
   numberText: {
+    color: '#547260',
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -154,10 +178,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   foodName: {
+    color: '#547260',
     fontSize: 18,
     fontWeight: 'bold',
   },
   foodDetails: {
+    color: '#547260',
     marginTop: 5,
   },
   iconsContainer: {
@@ -171,15 +197,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 15,
-    marginBottom: 20,
+    marginBottom: 50,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '70%',
+    width: '100%',
   },
   addButton: {
-    backgroundColor: '#547260',
     width: 150,
     height: 52,
     justifyContent: 'center',
@@ -187,7 +212,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   notFoundButton: {
-    backgroundColor: '#76A689',
     width: 200,
     height: 52,
     justifyContent: 'center',
@@ -197,7 +221,6 @@ const styles = StyleSheet.create({
   buttonText: {
     fontWeight: 'bold',
     fontSize: 16,
-    color: 'white',
     textAlign:'center'
   },
 });

@@ -4,7 +4,7 @@ import { Text, View } from '@/components/Themed';
 import { Feather } from '@expo/vector-icons';
 import { Meal } from '@/database/entities/meal-entity';
 import { useDatabaseConnection } from '@/database/DatabaseConnection';
-import { Link, router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import Header from '@/components/Header';
 
 interface ItemMeal extends Meal {
