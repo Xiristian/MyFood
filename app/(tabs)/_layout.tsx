@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import LoginPage from '../login';
 import { Pressable, View, StyleSheet, PressableProps } from 'react-native';
+
+
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
@@ -25,8 +28,16 @@ function CustomTabBarButton({ children, ...props }: CustomTabBarButtonProps) {
 }
 
 export default function TabLayout() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleLogin = () => {
+    // Defina o estado de autenticação como verdadeiro após o login
+    setIsAuthenticated(true);
+  }
+
   return (
     <View style={styles.container}>
+       {isAuthenticated ? (
       <Tabs
         screenOptions={{
           tabBarShowLabel: false,
@@ -83,6 +94,8 @@ export default function TabLayout() {
           }}
         />
       </Tabs>
+      ) : null}
+      {!isAuthenticated && <LoginPage onLogin={handleLogin} />}
     </View>
   );
 }
