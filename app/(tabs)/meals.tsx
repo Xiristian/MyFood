@@ -87,9 +87,12 @@ export default function TabTwoScreen() {
 const RenderExpandedContent = ({ id }: { id: number }) => {
     const navigation = useNavigation()
     return (
-      < View style={styles.expandedContent} >
+      <View style={styles.expandedContent} >
         <View style={styles.expandedContentIconsRow} lightColor="#FFFCEB" darkColor="#3C3C3C">
-        <TouchableOpacity onPress={() => {router.navigate('camera')}}>
+          <TouchableOpacity onPress={() => {
+            //@ts-ignore
+            navigation.navigate('camera', { id: id })
+          }}>
             <View style={styles.iconWithText} lightColor="#FFFCEB" darkColor="#3C3C3C">
               <Feather name="camera" size={24} color="#76A689" style={styles.icon} />
               <Text style={styles.iconDescription}>Fotografar</Text>
@@ -105,7 +108,7 @@ const RenderExpandedContent = ({ id }: { id: number }) => {
             </View>
           </TouchableOpacity>
         </View>
-      </View >
+      </View>
     )
   };
 
