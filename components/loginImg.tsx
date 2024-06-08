@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Image, StyleSheet } from 'react-native';
+import Logo from '../assets/images/icon.png'
 
 
 
@@ -7,7 +8,7 @@ const FloatingSVG = () => {
   return (
     <View style={styles.container}>
       <Image
-        source={require('../assets/images/logoMeno.svg')}
+        source={Logo}
         style={styles.svg}
       />
     </View>

@@ -13,15 +13,15 @@ interface LoginPageProps {
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-   if (email === 'usuario' && password === 'senha123') {
+  /* if (email === 'usuario' && password === 'senha123') {
       console.log('Login realizado com sucesso!');
       onLogin();
     } else {
       Alert.alert('Erro', 'Credenciais inválidas. Por favor, tente novamente.');
     }
-  };
-    /*try {
-      const response = await axios.post('URL_BACKEND/login', {
+  };*/
+    try {
+      const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/login`, {
         email,
         password,
       });
@@ -36,7 +36,7 @@ interface LoginPageProps {
       Alert.alert('Erro', 'Algo deu errado. Por favor, tente novamente mais tarde.');
     }
   };
-*/
+
  /* <Image
 source={require('../../assets/images/loginImage.png')}
 style={styles.image}

@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert, Pressable } from 'react-native';
+import { StyleSheet, Alert, Pressable } from 'react-native';
+import { Text, View, TextInput } from '@/components/Themed';
+
+
+
 
 const CadastroScreen = () => {
   const [nome, setNome] = useState('');
@@ -32,15 +36,14 @@ const CadastroScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      
+    <View style={styles.container} lightColor="#FFFCEB" darkColor="#3C3C3C">
       <TextInput
-        style={styles.input}
-        placeholder="Nome"
+        style={styles.input}      
+        placeholder="Idade"
         value={nome}
         onChangeText={setNome}
       />
-      <View style={styles.row}>
+      <View style={styles.row} lightColor="#FFFCEB" darkColor="#3C3C3C">
         <TextInput
           style={[styles.input, styles.halfWidth]}
           placeholder="Idade"
@@ -48,6 +51,8 @@ const CadastroScreen = () => {
           value={idade}
           onChangeText={setIdade}
         />
+      </View>
+      <View style={styles.row} lightColor="#FFFCEB" darkColor="#3C3C3C">
         <TextInput
           style={[styles.input, styles.halfWidth]}
           placeholder="Altura (cm)"
@@ -56,7 +61,7 @@ const CadastroScreen = () => {
           onChangeText={setAltura}
         />
       </View>
-      <View style={styles.row}>
+      <View style={styles.row} lightColor="#FFFCEB" darkColor="#3C3C3C">
         <TextInput
           style={[styles.input, styles.halfWidth]}
           placeholder="Peso Atual (kg)"
@@ -64,6 +69,8 @@ const CadastroScreen = () => {
           value={pesoAtual}
           onChangeText={setPesoAtual}
         />
+        </View>
+        <View style={styles.row} lightColor="#FFFCEB" darkColor="#3C3C3C" >
         <TextInput
           style={[styles.input, styles.halfWidth]}
           placeholder="Peso Meta (kg)"
