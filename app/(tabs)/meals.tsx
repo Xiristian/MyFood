@@ -4,8 +4,9 @@ import { Text, View } from '@/components/Themed';
 import { Feather } from '@expo/vector-icons';
 import { Meal } from '@/database/entities/meal-entity';
 import { useDatabaseConnection } from '@/database/DatabaseConnection';
-import { Link, router, useFocusEffect, useNavigation } from 'expo-router';
+import { useFocusEffect, useNavigation } from 'expo-router';
 import Header from '@/components/Header';
+import RenderFoods from '@/components/RenderFoods';
 
 interface ItemMeal extends Meal {
   isExpanded?: Boolean;
@@ -77,12 +78,13 @@ export default function TabTwoScreen() {
             <ArrowIcon />
           </TouchableOpacity>
         </View>
+        {item.isExpanded ? <RenderFoods foods={item.foods} /> : null}
         {item.isExpanded ? <RenderExpandedContent id={item.id} /> : null}
       </View>
     );
   };
 
-  const RenderExpandedContent = ({ id }: { id: number }) => {
+const RenderExpandedContent = ({ id }: { id: number }) => {
     const navigation = useNavigation()
     return (
       <View style={styles.expandedContent} >
@@ -96,7 +98,10 @@ export default function TabTwoScreen() {
               <Text style={styles.iconDescription}>Fotografar</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => { router.navigate('description-screen') }}>
+          <TouchableOpacity onPress={() => {
+            //@ts-ignore
+            navigation.navigate('description-screen', { mealId: id })
+          }}>
             <View style={styles.iconWithText} lightColor="#FFFCEB" darkColor="#3C3C3C">
               <Feather name="edit" size={24} color="#76A689" style={styles.icon} />
               <Text style={styles.iconDescription}>Descrever</Text>
