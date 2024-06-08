@@ -5,31 +5,34 @@ import Header from '@/components/Header';
 import { Feather } from '@expo/vector-icons';
 import SearchBar from '@/components/SearchBar';
 import { router } from 'expo-router';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { useDatabaseConnection } from '@/database/DatabaseConnection';
 
 interface FoodItem {
   id: number;
   name: string;
   calories: number;
-  quantity: string;
+  quantity: number;
+  unit: string
 }
 
 const initialFoodData: FoodItem[] = [
-  { id: 1, name: 'Banana', calories: 89, quantity: '1 unidade' },
-  { id: 2, name: 'Maçã', calories: 52, quantity: '1 unidade' },
-  { id: 3, name: 'Morango', calories: 32, quantity: '100g' },
+  { id: 1, name: 'Banana', calories: 89, quantity: 1, unit: 'unidade' },
+  { id: 2, name: 'Maçã', calories: 52, quantity: 1, unit:'unidade' },
+  { id: 3, name: 'Morango', calories: 32, quantity: 100, unit: 'g' },
 ];
 
 interface FoodCardProps {
   item: FoodItem;
-  index: number; 
+  index: number;
   onSelectItem: (id: number) => void;
   isSelected: boolean;
 }
 
 const FoodCard: React.FC<FoodCardProps> = ({ item, index, onSelectItem, isSelected }) => {
   const opacity = 0.8;
-  const iconSize = 21; 
-  const appearance = Appearance.getColorScheme(); 
+  const iconSize = 21;
+  const appearance = Appearance.getColorScheme();
 
   return (
     <>
@@ -60,10 +63,14 @@ const FoodCard: React.FC<FoodCardProps> = ({ item, index, onSelectItem, isSelect
 };
 
 export default function DescriptionScreen() {
+  const route = useRoute<RouteProp<{ params: { mealId: number } }>>();
+  const mealId = route.params?.mealId;
+
   const [searchResults, setSearchResults] = useState<FoodItem[]>([]);
   const [allFoodData] = useState<FoodItem[]>(initialFoodData);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const appearance = Appearance.getColorScheme(); 
+  const appearance = Appearance.getColorScheme();
+  const { mealRepository } = useDatabaseConnection();
 
   function handleSearch(text: string): void {
     const filteredResults = allFoodData.filter(item =>
@@ -80,13 +87,17 @@ export default function DescriptionScreen() {
     );
   }
 
-  function handleAddItems(): void {
-  if (selectedItems.length > 0) {
-    console.log(`Adicionar alimentos com IDs ${selectedItems} à refeição XXX`);//deve trazer o id da refeição, ver com o christian
-    // Em andamento...
-    router.back();
+
+  async function handleAddItems(): Promise<void> {
+    if (selectedItems.length > 0) {
+      console.log(`Adicionar alimentos com IDs ${selectedItems} à refeição ${mealId}`);
+      for (const item of selectedItems) {
+        const food = allFoodData.filter((value) => value.id === item)[0]
+        await mealRepository.createFood(food.name, food.quantity, food.calories, new Date(), mealId)
+      }
+      router.back();
+    }
   }
-}
 
 
   return (
@@ -112,7 +123,7 @@ export default function DescriptionScreen() {
       <View style={styles.bottomButtons}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={[styles.notFoundButton, { backgroundColor: appearance === 'dark' ? '#555555' : '#76A689' }]}>
-            <Text style={[styles.buttonText, {color: '#FFFFFF'}]}>Não encontrei meu alimento</Text>
+            <Text style={[styles.buttonText, { color: '#FFFFFF' }]}>Não encontrei meu alimento</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.addButton, { backgroundColor: appearance === 'dark' ? '#333333' : '#547260' }]} onPress={handleAddItems}>
             <Text style={[styles.buttonText, { color: '#FFFFFF' }]}>Adicionar</Text>
@@ -142,7 +153,7 @@ const styles = StyleSheet.create({
   },
   arrow: {
     marginTop: 40,
-    color:'white'
+    color: 'white'
   },
   separator: {
     height: 1,
@@ -158,9 +169,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   selectedItem: {
-    marginTop:10,
-    marginRight:10,
-    marginLeft:10,
+    marginTop: 10,
+    marginRight: 10,
+    marginLeft: 10,
     borderColor: '#76A689',
     borderWidth: 2,
     borderRadius: 10,
@@ -190,8 +201,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  icon:{
-    marginRight:10
+  icon: {
+    marginRight: 10
   },
   bottomButtons: {
     justifyContent: 'center',
@@ -221,6 +232,6 @@ const styles = StyleSheet.create({
   buttonText: {
     fontWeight: 'bold',
     fontSize: 16,
-    textAlign:'center'
+    textAlign: 'center'
   },
 });
