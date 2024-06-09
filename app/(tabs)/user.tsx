@@ -36,12 +36,16 @@ export default function TabOneScreen() {
         <View style={styles.userInfo} lightColor="#FFFCEB" darkColor="#3C3C3C">
           <Text style={styles.userName}>Julia de Luca</Text>
           <Pressable onPress={() => setDropdownVisible(!dropdownVisible)}>
-            <FontAwesome name={dropdownVisible ? "chevron-up" : "chevron-down"} size={24} color="#435B4D" />
+            <FontAwesome
+              name={dropdownVisible ? 'chevron-up' : 'chevron-down'}
+              size={24}
+              color="#435B4D"
+            />
           </Pressable>
         </View>
         {dropdownVisible && (
           <View style={styles.dropdown} lightColor="#FFFCEB" darkColor="#3C3C3C">
-            <View style={styles.dropdownItem }lightColor="#FFFCEB" darkColor="#3C3C3C">
+            <View style={styles.dropdownItem} lightColor="#FFFCEB" darkColor="#3C3C3C">
               <MaterialCommunityIcons name="view-dashboard" size={24} color="#435B4D" />
               <Text style={styles.dropdownItemText}>Dashboard</Text>
             </View>

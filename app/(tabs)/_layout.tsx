@@ -3,9 +3,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import LoginPage from '../login';
-import { Pressable, View, StyleSheet, PressableProps } from 'react-native';
-
-
+import { Pressable, View, StyleSheet, PressableProps, GestureResponderEvent } from 'react-native';
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
@@ -17,83 +15,85 @@ function TabBarIcon(props: {
 
 interface CustomTabBarButtonProps extends PressableProps {
   children: React.ReactNode;
+  setSelectedTab: (name: string) => void;
+  selectedTab: string;
+  name: string;
 }
 
-function CustomTabBarButton({ children, ...props }: CustomTabBarButtonProps) {
+function CustomTabBarButton({
+  children,
+  setSelectedTab,
+  selectedTab,
+  name,
+  ...props
+}: CustomTabBarButtonProps) {
   return (
-    <Pressable {...props} style={styles.button}>
-      {children}
+    <Pressable
+      {...props}
+      style={styles.button}
+      onPress={(e: GestureResponderEvent) => {
+        setSelectedTab(name);
+        if (props.onPress) props.onPress(e);
+      }}>
+      <View
+        style={[
+          styles.iconContainer,
+          {
+            backgroundColor: selectedTab === name ? '#547260' : '#76A689',
+          },
+        ]}>
+        {children}
+      </View>
     </Pressable>
   );
 }
 
 export default function TabLayout() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [selectedTab, setSelectedTab] = useState('user');
 
   const handleLogin = () => {
-    // Defina o estado de autenticação como verdadeiro após o login
     setIsAuthenticated(true);
-  }
+  };
 
   return (
     <View style={styles.container}>
-       {isAuthenticated ? (
-      <Tabs
-        screenOptions={{
-          tabBarShowLabel: false,
-          headerShown: false,
-          tabBarButton: (props) => <CustomTabBarButton {...props} />,
-          tabBarStyle: styles.tabBar,
-        }}>
-        <Tabs.Screen
-          name="user"
-          options={{
-            title: 'Perfil',
-            tabBarIcon: () => (
-              <TabBarIcon name="user" color="white" size={24} />
-            ),
-            tabBarButton: (props) => (
-              <CustomTabBarButton {...props}>
-                <View style={[styles.iconContainer, { backgroundColor: '#76A689' }]}>
+      {isAuthenticated ? (
+        <Tabs
+          screenOptions={{
+            tabBarShowLabel: false,
+            headerShown: false,
+            tabBarStyle: styles.tabBar,
+          }}>
+          <Tabs.Screen
+            name="user"
+            options={{
+              tabBarButton: (props) => (
+                <CustomTabBarButton
+                  {...props}
+                  setSelectedTab={setSelectedTab}
+                  selectedTab={selectedTab}
+                  name="user">
                   <FontAwesome name="user" size={30} color="white" />
-                </View>
-              </CustomTabBarButton>
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="meals"
-          options={{
-            title: 'Refeições',
-            tabBarIcon: () => (
-              <MaterialCommunityIcons name="carrot" size={24} color="white" />
-            ),
-            tabBarButton: (props) => (
-              <CustomTabBarButton {...props}>
-                <View style={[styles.iconContainer, { backgroundColor: '#547260' }]}>
+                </CustomTabBarButton>
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="meals"
+            options={{
+              tabBarButton: (props) => (
+                <CustomTabBarButton
+                  {...props}
+                  setSelectedTab={setSelectedTab}
+                  selectedTab={selectedTab}
+                  name="meals">
                   <MaterialCommunityIcons name="carrot" size={40} color="white" />
-                </View>
-              </CustomTabBarButton>
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="teste"
-          options={{
-            title: 'Escanear',
-            tabBarIcon: () => (
-              <MaterialCommunityIcons name="camera" size={24} color="white" />
-            ),
-            tabBarButton: (props) => (
-              <CustomTabBarButton {...props}>
-                <View style={[styles.iconContainer, { backgroundColor: '#76A689' }]}>
-                  <MaterialCommunityIcons name="camera" size={30} color="white" />
-                </View>
-              </CustomTabBarButton>
-            ),
-          }}
-        />
-      </Tabs>
+                </CustomTabBarButton>
+              ),
+            }}
+          />
+        </Tabs>
       ) : null}
       {!isAuthenticated && <LoginPage onLogin={handleLogin} />}
     </View>
@@ -107,9 +107,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFCEB',
   },
   tabBar: {
+    flex: 1,
     backgroundColor: '#FFFCEB',
-    borderTopWidth: 0,
-    height: 100,
+    maxHeight: '8%',
   },
   button: {
     flex: 1,

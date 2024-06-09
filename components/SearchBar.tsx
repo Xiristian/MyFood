@@ -25,12 +25,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder, onChangeText }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={clearText} style={styles.clearIconContainer}>
-        <Icon
-          name="close"
-          type="material"
-          color={text ? '#76A689' : 'transparent'}
-          size={24}
-        />
+        <Icon name="close" type="material" color={text ? '#76A689' : 'transparent'} size={24} />
       </TouchableOpacity>
       <TextInput
         style={styles.input}

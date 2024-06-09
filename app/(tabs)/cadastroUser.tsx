@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import { StyleSheet, Alert, Pressable } from 'react-native';
 import { Text, View, TextInput } from '@/components/Themed';
 
-
-
-
 const CadastroScreen = () => {
   const [nome, setNome] = useState('');
   const [idade, setIdade] = useState('');
@@ -37,12 +34,7 @@ const CadastroScreen = () => {
 
   return (
     <View style={styles.container} lightColor="#FFFCEB" darkColor="#3C3C3C">
-      <TextInput
-        style={styles.input}      
-        placeholder="Idade"
-        value={nome}
-        onChangeText={setNome}
-      />
+      <TextInput style={styles.input} placeholder="Idade" value={nome} onChangeText={setNome} />
       <View style={styles.row} lightColor="#FFFCEB" darkColor="#3C3C3C">
         <TextInput
           style={[styles.input, styles.halfWidth]}
@@ -69,8 +61,8 @@ const CadastroScreen = () => {
           value={pesoAtual}
           onChangeText={setPesoAtual}
         />
-        </View>
-        <View style={styles.row} lightColor="#FFFCEB" darkColor="#3C3C3C" >
+      </View>
+      <View style={styles.row} lightColor="#FFFCEB" darkColor="#3C3C3C">
         <TextInput
           style={[styles.input, styles.halfWidth]}
           placeholder="Peso Meta (kg)"

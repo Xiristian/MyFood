@@ -12,19 +12,17 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ title }) => {
   return (
     <View style={[styles.headerContainer]}>
-      <View style={styles.header}>
-        
-      </View>
+      <View style={styles.header}></View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   headerContainer: {
     width: '100%',
-    height:'13%',
+    height: '13%',
     backgroundColor: '#547260',
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
   },
   header: {
     flexDirection: 'row',

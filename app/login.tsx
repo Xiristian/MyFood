@@ -1,19 +1,19 @@
-import  { useState } from 'react';
-import { View, TextInput, StyleSheet, Alert, Image  } from 'react-native';
+import { useState } from 'react';
+import { View, TextInput, StyleSheet, Alert, Image } from 'react-native';
 import LoginButton from '../components/loginButton';
-import axios from 'axios'; 
-import FloatingSVG from '../components/loginImg'
-
+import axios from 'axios';
+import FloatingSVG from '../components/loginImg';
 
 interface LoginPageProps {
-    onLogin: () => void;
-  }
+  onLogin: () => void;
+}
 
-  const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {  const [email, setEmail] = useState('');
+const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-  /* if (email === 'usuario' && password === 'senha123') {
+    /* if (email === 'usuario' && password === 'senha123') {
       console.log('Login realizado com sucesso!');
       onLogin();
     } else {
@@ -37,7 +37,7 @@ interface LoginPageProps {
     }
   };
 
- /* <Image
+  /* <Image
 source={require('../../assets/images/loginImage.png')}
 style={styles.image}
 />*/
@@ -99,7 +99,6 @@ const styles = StyleSheet.create({
 });
 
 export default LoginPage;
-
 
 /* signUpText: {
     color: '#76A689',
