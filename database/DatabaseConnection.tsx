@@ -1,15 +1,9 @@
 import * as SQLite from 'expo-sqlite/legacy';
-import { Text, View } from "@/components/Themed";
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import { DataSource } from "typeorm";
-import { FoodRepository } from "./repositories/FoodRepository";
-import { MealRepository } from "./repositories/MealRepository";
+import { Text, View } from '@/components/Themed';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { DataSource } from 'typeorm';
+import { FoodRepository } from './repositories/FoodRepository';
+import { MealRepository } from './repositories/MealRepository';
 import { Meal } from './entities/meal-entity';
 import { Food } from './entities/food-entity';
 
@@ -20,7 +14,7 @@ interface DatabaseConnectionContextData {
 }
 
 const DatabaseConnectionContext = createContext<DatabaseConnectionContextData>(
-  {} as DatabaseConnectionContextData
+  {} as DatabaseConnectionContextData,
 );
 
 export const DatabaseConnectionProvider: React.FC<{
@@ -30,8 +24,8 @@ export const DatabaseConnectionProvider: React.FC<{
 
   const connect = useCallback(async () => {
     const createdConnection = new DataSource({
-      type: "expo",
-      database: "myfood.db",
+      type: 'expo',
+      database: 'myfood.db',
       driver: SQLite,
       entities: [Meal, Food],
       synchronize: true,
@@ -49,12 +43,11 @@ export const DatabaseConnectionProvider: React.FC<{
     return (
       <View
         style={{
-          backgroundColor: "#7a3687",
-          justifyContent: "center",
-          alignItems: "center",
+          backgroundColor: '#7a3687',
+          justifyContent: 'center',
+          alignItems: 'center',
           flex: 1,
-        }}
-      >
+        }}>
         <Text lightColor="#eee" darkColor="rgba(255,255,255,0.1)">
           Loading...
         </Text>
@@ -68,8 +61,7 @@ export const DatabaseConnectionProvider: React.FC<{
         foodRepository: new FoodRepository(connection),
         mealRepository: new MealRepository(connection),
         connection: connection,
-      }}
-    >
+      }}>
       {children}
     </DatabaseConnectionContext.Provider>
   );

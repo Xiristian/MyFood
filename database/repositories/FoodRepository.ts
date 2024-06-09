@@ -10,7 +10,8 @@ export class FoodRepository {
 
   // Selecionar alimentos por data e trazer informações da comida com a refeição
   async findFoodsByDate(date: Date): Promise<Food[]> {
-    return this.foodRepository.createQueryBuilder('food')
+    return this.foodRepository
+      .createQueryBuilder('food')
       .leftJoinAndSelect('food.meal', 'meal')
       .where('food.date = :date', { date })
       .getMany();

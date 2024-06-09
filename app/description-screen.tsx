@@ -13,12 +13,12 @@ interface FoodItem {
   name: string;
   calories: number;
   quantity: number;
-  unit: string
+  unit: string;
 }
 
 const initialFoodData: FoodItem[] = [
   { id: 1, name: 'Banana', calories: 89, quantity: 1, unit: 'unidade' },
-  { id: 2, name: 'Maçã', calories: 52, quantity: 1, unit:'unidade' },
+  { id: 2, name: 'Maçã', calories: 52, quantity: 1, unit: 'unidade' },
   { id: 3, name: 'Morango', calories: 32, quantity: 100, unit: 'g' },
 ];
 
@@ -36,11 +36,15 @@ const FoodCard: React.FC<FoodCardProps> = ({ item, index, onSelectItem, isSelect
 
   return (
     <>
-      <View style={[styles.separator, { backgroundColor: appearance === 'dark' ? '#333333' : '#E3E3E3' }]} />
+      <View
+        style={[
+          styles.separator,
+          { backgroundColor: appearance === 'dark' ? '#333333' : '#E3E3E3' },
+        ]}
+      />
       <TouchableOpacity
         style={[styles.foodItem, isSelected && styles.selectedItem]}
-        onPress={() => onSelectItem(item.id)}
-      >
+        onPress={() => onSelectItem(item.id)}>
         <View style={styles.numberContainer}>
           <Text style={styles.numberText}>{index + 1}</Text>
         </View>
@@ -51,10 +55,20 @@ const FoodCard: React.FC<FoodCardProps> = ({ item, index, onSelectItem, isSelect
         </View>
         <View style={styles.iconsContainer}>
           <TouchableOpacity onPress={() => onSelectItem(item.id)}>
-            <Feather name="plus-circle" size={iconSize} color="#547260" style={[styles.icon, { opacity }]} />
+            <Feather
+              name="plus-circle"
+              size={iconSize}
+              color="#547260"
+              style={[styles.icon, { opacity }]}
+            />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => console.log(`Editar ${item.name}`)}>
-            <Feather name="edit" size={iconSize} color="#547260" style={[styles.icon, { opacity }]} />
+            <Feather
+              name="edit"
+              size={iconSize}
+              color="#547260"
+              style={[styles.icon, { opacity }]}
+            />
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
@@ -73,44 +87,54 @@ export default function DescriptionScreen() {
   const { mealRepository } = useDatabaseConnection();
 
   function handleSearch(text: string): void {
-    const filteredResults = allFoodData.filter(item =>
-      item.name.toLowerCase().includes(text.toLowerCase())
+    const filteredResults = allFoodData.filter((item) =>
+      item.name.toLowerCase().includes(text.toLowerCase()),
     );
     setSearchResults(filteredResults);
   }
 
   function handleSelectItem(id: number): void {
-    setSelectedItems(prevSelectedItems =>
+    setSelectedItems((prevSelectedItems) =>
       prevSelectedItems.includes(id)
-        ? prevSelectedItems.filter(item => item !== id)
-        : [...prevSelectedItems, id]
+        ? prevSelectedItems.filter((item) => item !== id)
+        : [...prevSelectedItems, id],
     );
   }
-
 
   async function handleAddItems(): Promise<void> {
     if (selectedItems.length > 0) {
       console.log(`Adicionar alimentos com IDs ${selectedItems} à refeição ${mealId}`);
       for (const item of selectedItems) {
-        const food = allFoodData.filter((value) => value.id === item)[0]
-        await mealRepository.createFood(food.name, food.quantity, food.calories, new Date(), mealId)
+        const food = allFoodData.filter((value) => value.id === item)[0];
+        await mealRepository.createFood(
+          food.name,
+          food.quantity,
+          food.calories,
+          new Date(),
+          mealId,
+        );
       }
       router.back();
     }
   }
 
-
   return (
-    <View style={[styles.container, { backgroundColor: appearance === 'dark' ? '#333333' : '#FFFCEB' }]}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: appearance === 'dark' ? '#333333' : '#FFFCEB' },
+      ]}>
       <Header title={''} />
       <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
         <Feather name="arrow-left" size={24} style={styles.arrow} />
       </TouchableOpacity>
-      <Text style={[styles.title, { color: appearance === 'dark' ? '#FFFFFF' : '#547260' }]}>Adicionar Alimentos</Text>
+      <Text style={[styles.title, { color: appearance === 'dark' ? '#FFFFFF' : '#547260' }]}>
+        Adicionar Alimentos
+      </Text>
       <SearchBar placeholder="Digite um alimento" onChangeText={handleSearch} />
       <FlatList
         data={searchResults}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item, index }) => (
           <FoodCard
             item={item}
@@ -122,10 +146,21 @@ export default function DescriptionScreen() {
       />
       <View style={styles.bottomButtons}>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={[styles.notFoundButton, { backgroundColor: appearance === 'dark' ? '#555555' : '#76A689' }]}>
-            <Text style={[styles.buttonText, { color: '#FFFFFF' }]}>Não encontrei meu alimento</Text>
+          <TouchableOpacity
+            style={[
+              styles.notFoundButton,
+              { backgroundColor: appearance === 'dark' ? '#555555' : '#76A689' },
+            ]}>
+            <Text style={[styles.buttonText, { color: '#FFFFFF' }]}>
+              Não encontrei meu alimento
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.addButton, { backgroundColor: appearance === 'dark' ? '#333333' : '#547260' }]} onPress={handleAddItems}>
+          <TouchableOpacity
+            style={[
+              styles.addButton,
+              { backgroundColor: appearance === 'dark' ? '#333333' : '#547260' },
+            ]}
+            onPress={handleAddItems}>
             <Text style={[styles.buttonText, { color: '#FFFFFF' }]}>Adicionar</Text>
           </TouchableOpacity>
         </View>
@@ -153,7 +188,7 @@ const styles = StyleSheet.create({
   },
   arrow: {
     marginTop: 40,
-    color: 'white'
+    color: 'white',
   },
   separator: {
     height: 1,
@@ -202,7 +237,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    marginRight: 10
+    marginRight: 10,
   },
   bottomButtons: {
     justifyContent: 'center',
@@ -232,6 +267,6 @@ const styles = StyleSheet.create({
   buttonText: {
     fontWeight: 'bold',
     fontSize: 16,
-    textAlign: 'center'
+    textAlign: 'center',
   },
 });

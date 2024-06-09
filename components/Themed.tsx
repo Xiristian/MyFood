@@ -1,9 +1,9 @@
-/**
- * Learn more about Light and Dark modes:
- * https://docs.expo.io/guides/color-schemes/
- */
-
-import { Text as DefaultText, View as DefaultView, Button as DefaultButton, TextInput as DefaultInput} from 'react-native';
+import {
+  Text as DefaultText,
+  View as DefaultView,
+  Button as DefaultButton,
+  TextInput as DefaultInput,
+} from 'react-native';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from './useColorScheme';
@@ -18,10 +18,9 @@ export type ViewProps = ThemeProps & DefaultView['props'];
 export type ButtonProps = ThemeProps & DefaultButton['props'];
 export type InputProps = ThemeProps & DefaultInput['props'];
 
-
 export function useThemeColor(
   props: { light?: string; dark?: string },
-  colorName: keyof typeof Colors.light & keyof typeof Colors.dark
+  colorName: keyof typeof Colors.light & keyof typeof Colors.dark,
 ) {
   const theme = useColorScheme() ?? 'light';
   const colorFromProps = props[theme];

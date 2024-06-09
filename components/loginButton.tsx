@@ -1,11 +1,9 @@
-
-
 // LoginButton.tsx
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 type Props = {
-  onPress: () => void; 
+  onPress: () => void;
 };
 
 const LoginButton: React.FC<Props> = ({ onPress }) => {

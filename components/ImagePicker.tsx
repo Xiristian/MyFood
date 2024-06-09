@@ -1,10 +1,10 @@
-import * as DefaultImagePicker from "expo-image-picker";
-import { Button, View, Text } from "./Themed";
-import { readFoodsFromImage } from "@/backend/read-foods-from-image";
-import { FoodDTO } from "@/backend/FoodDTO";
-import { useEffect } from "react";
+import * as DefaultImagePicker from 'expo-image-picker';
+import { Button, View, Text } from './Themed';
+import { readFoodsFromImage } from '@/backend/read-foods-from-image';
+import { FoodDTO } from '@/backend/FoodDTO';
+import { useEffect } from 'react';
 import { Feather } from '@expo/vector-icons';
-import { Alert, StyleSheet, TouchableOpacity } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
 
 export default function ImagePicker({
   setImage,
@@ -18,9 +18,13 @@ export default function ImagePicker({
   useEffect(() => {
     (async () => {
       const { status: cameraStatus } = await DefaultImagePicker.requestCameraPermissionsAsync();
-      const { status: mediaLibraryStatus } = await DefaultImagePicker.requestMediaLibraryPermissionsAsync();
+      const { status: mediaLibraryStatus } =
+        await DefaultImagePicker.requestMediaLibraryPermissionsAsync();
       if (cameraStatus !== 'granted' || mediaLibraryStatus !== 'granted') {
-        Alert.alert('Permissão necessária', 'Precisamos de permissão para acessar a câmera e a galeria.');
+        Alert.alert(
+          'Permissão necessária',
+          'Precisamos de permissão para acessar a câmera e a galeria.',
+        );
       }
     })();
   }, []);
@@ -31,9 +35,7 @@ export default function ImagePicker({
       allowsEditing: true,
       quality: 1,
     };
-    let imagePicked = await DefaultImagePicker.launchImageLibraryAsync(
-      imagePickerOptions
-    );
+    let imagePicked = await DefaultImagePicker.launchImageLibraryAsync(imagePickerOptions);
 
     if (!imagePicked.canceled) {
       const result = await readFoodsFromImage(imagePicked.assets[0].uri);
@@ -48,9 +50,7 @@ export default function ImagePicker({
       allowsEditing: true,
       quality: 1,
     };
-    let imagePicked = await DefaultImagePicker.launchCameraAsync(
-      imagePickerOptions
-    );
+    let imagePicked = await DefaultImagePicker.launchCameraAsync(imagePickerOptions);
 
     if (!imagePicked.canceled) {
       const result = await readFoodsFromImage(imagePicked.assets[0].uri);
@@ -63,7 +63,7 @@ export default function ImagePicker({
   return (
     <View style={styles.container} lightColor="#FFFCEB" darkColor="#3C3C3C">
       <View style={styles.bottomButtons} lightColor="#FFFCEB" darkColor="#3C3C3C">
-      <TouchableOpacity onPress={takePhotoWithCamera}>
+        <TouchableOpacity onPress={takePhotoWithCamera}>
           <View style={styles.iconWithText} lightColor="#FFFCEB" darkColor="#3C3C3C">
             <Feather name="camera" size={54} color="#76A689" style={styles.icon} />
             <Text style={styles.iconDescription}>Fotografar</Text>

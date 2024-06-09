@@ -26,25 +26,26 @@ export default function TabTwoScreen() {
 
   async function loadData() {
     let meals = await mealRepository.findAll();
-    if (!meals || meals.length === 0)
-      meals = await mealRepository.createMeal(initialData);
+    if (!meals || meals.length === 0) meals = await mealRepository.createMeal(initialData);
     setData(meals);
   }
 
   useFocusEffect(
     useCallback(() => {
       loadData();
-    }, [])
+    }, []),
   );
 
   const toggleExpansion = (id: number) => {
     if (data)
-      setData(data.map(item => {
-        if (item.id === id) {
-          return { ...item, isExpanded: !item.isExpanded };
-        }
-        return item;
-      }));
+      setData(
+        data.map((item) => {
+          if (item.id === id) {
+            return { ...item, isExpanded: !item.isExpanded };
+          }
+          return item;
+        }),
+      );
   };
 
   function IconComponent({ iconName }: { iconName: string }) {
@@ -65,15 +66,16 @@ export default function TabTwoScreen() {
     function ArrowIcon() {
       if (item.isExpanded)
         return <Feather name="chevron-down" size={24} color="#76A689" style={styles.icon} />;
-      else
-        return <Feather name="chevron-right" size={24} color="#76A689" style={styles.icon} />;
+      else return <Feather name="chevron-right" size={24} color="#76A689" style={styles.icon} />;
     }
 
     return (
       <View lightColor="#FFFCEB" darkColor="#3C3C3C">
         <View style={styles.listItem} lightColor="#FFFCEB" darkColor="#3C3C3C">
           <IconComponent iconName={item.iconName} />
-          <Text numberOfLines={1} style={styles.itemText}>{item.name}</Text>
+          <Text numberOfLines={1} style={styles.itemText}>
+            {item.name}
+          </Text>
           <TouchableOpacity onPress={() => toggleExpansion(item.id)}>
             <ArrowIcon />
           </TouchableOpacity>
@@ -84,24 +86,26 @@ export default function TabTwoScreen() {
     );
   };
 
-const RenderExpandedContent = ({ id }: { id: number }) => {
-    const navigation = useNavigation()
+  const RenderExpandedContent = ({ id }: { id: number }) => {
+    const navigation = useNavigation();
     return (
-      <View style={styles.expandedContent} >
+      <View style={styles.expandedContent}>
         <View style={styles.expandedContentIconsRow} lightColor="#FFFCEB" darkColor="#3C3C3C">
-          <TouchableOpacity onPress={() => {
-            //@ts-ignore
-            navigation.navigate('camera', { id: id })
-          }}>
+          <TouchableOpacity
+            onPress={() => {
+              //@ts-ignore
+              navigation.navigate('camera', { id: id });
+            }}>
             <View style={styles.iconWithText} lightColor="#FFFCEB" darkColor="#3C3C3C">
               <Feather name="camera" size={24} color="#76A689" style={styles.icon} />
               <Text style={styles.iconDescription}>Fotografar</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => {
-            //@ts-ignore
-            navigation.navigate('description-screen', { mealId: id })
-          }}>
+          <TouchableOpacity
+            onPress={() => {
+              //@ts-ignore
+              navigation.navigate('description-screen', { mealId: id });
+            }}>
             <View style={styles.iconWithText} lightColor="#FFFCEB" darkColor="#3C3C3C">
               <Feather name="edit" size={24} color="#76A689" style={styles.icon} />
               <Text style={styles.iconDescription}>Descrever</Text>
@@ -109,7 +113,7 @@ const RenderExpandedContent = ({ id }: { id: number }) => {
           </TouchableOpacity>
         </View>
       </View>
-    )
+    );
   };
 
   return (
@@ -119,8 +123,8 @@ const RenderExpandedContent = ({ id }: { id: number }) => {
       <View style={styles.listContainer} lightColor="#FFFCEB" darkColor="#3C3C3C">
         <FlatList
           data={data}
-          keyExtractor={item => item.id.toString()}
-          renderItem={item => <RenderItem item={item.item} />}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={(item) => <RenderItem item={item.item} />}
         />
       </View>
     </View>
@@ -161,7 +165,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 18,
     flex: 1,
-    color: '#547260'
+    color: '#547260',
   },
   icon: {
     marginRight: 10,
@@ -183,6 +187,6 @@ const styles = StyleSheet.create({
   iconDescription: {
     marginLeft: 5,
     fontSize: 16,
-    color: '#76A689'
+    color: '#76A689',
   },
 });
