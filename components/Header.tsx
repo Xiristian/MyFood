@@ -22,7 +22,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
 const styles = StyleSheet.create({
   headerContainer: {
     width: '100%',
-    height:'8%',
+    height:'13%',
     backgroundColor: '#547260',
     paddingHorizontal: 16
   },
