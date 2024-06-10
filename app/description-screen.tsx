@@ -1,74 +1,43 @@
-import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, FlatList, View, Appearance } from 'react-native';
-import { Text } from '@/components/Themed';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { Text, TouchableOpacity, View } from '@/components/Themed';
 import Header from '@/components/Header';
 import { Feather } from '@expo/vector-icons';
 import SearchBar from '@/components/SearchBar';
 import { router } from 'expo-router';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { useDatabaseConnection } from '@/database/DatabaseConnection';
-
-interface FoodItem {
-  id: number;
-  name: string;
-  calories: number;
-  quantity: number;
-  unit: string;
-}
-
-const initialFoodData: FoodItem[] = [
-  { id: 1, name: 'Banana', calories: 89, quantity: 1, unit: 'unidade' },
-  { id: 2, name: 'Maçã', calories: 52, quantity: 1, unit: 'unidade' },
-  { id: 3, name: 'Morango', calories: 32, quantity: 100, unit: 'g' },
-];
+import { FoodDTO, getFoods } from '@/backend/get-foods';
 
 interface FoodCardProps {
-  item: FoodItem;
+  item: FoodDTO;
   index: number;
-  onSelectItem: (id: number) => void;
+  onSelectItem: (id: string) => void;
   isSelected: boolean;
 }
 
 const FoodCard: React.FC<FoodCardProps> = ({ item, index, onSelectItem, isSelected }) => {
-  const opacity = 0.8;
-  const iconSize = 21;
-  const appearance = Appearance.getColorScheme();
-
   return (
     <>
-      <View
-        style={[
-          styles.separator,
-          { backgroundColor: appearance === 'dark' ? '#333333' : '#E3E3E3' },
-        ]}
-      />
+      <View style={[styles.separator]} darkColor="#333333" lightColor="#E3E3E3" />
       <TouchableOpacity
         style={[styles.foodItem, isSelected && styles.selectedItem]}
-        onPress={() => onSelectItem(item.id)}>
+        onPress={() => onSelectItem(item.food_id)}>
         <View style={styles.numberContainer}>
           <Text style={styles.numberText}>{index + 1}</Text>
         </View>
         <View style={styles.foodInfo}>
-          <Text style={styles.foodName}>{item.name}</Text>
+          <Text style={styles.foodName}>{item.food_name}</Text>
           <Text style={styles.foodDetails}>Calorias: {item.calories}</Text>
           <Text style={styles.foodDetails}>Quantidade: {item.quantity}</Text>
+          <Text style={styles.foodDetails}>Unidade: {item.unit}</Text>
         </View>
         <View style={styles.iconsContainer}>
-          <TouchableOpacity onPress={() => onSelectItem(item.id)}>
-            <Feather
-              name="plus-circle"
-              size={iconSize}
-              color="#547260"
-              style={[styles.icon, { opacity }]}
-            />
+          <TouchableOpacity onPress={() => onSelectItem(item.food_id)}>
+            <Feather name="plus-circle" size={21} color="#547260" style={[styles.icon]} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => console.log(`Editar ${item.name}`)}>
-            <Feather
-              name="edit"
-              size={iconSize}
-              color="#547260"
-              style={[styles.icon, { opacity }]}
-            />
+          <TouchableOpacity onPress={() => console.log(`Editar ${item.food_name}`)}>
+            <Feather name="edit" size={21} color="#547260" style={[styles.icon]} />
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
@@ -77,23 +46,37 @@ const FoodCard: React.FC<FoodCardProps> = ({ item, index, onSelectItem, isSelect
 };
 
 export default function DescriptionScreen() {
-  const route = useRoute<RouteProp<{ params: { mealId: number } }>>();
-  const mealId = route.params?.mealId;
+  const route = useRoute<RouteProp<{ params: { id: number } }>>();
+  const mealId = route.params?.id;
 
-  const [searchResults, setSearchResults] = useState<FoodItem[]>([]);
-  const [allFoodData] = useState<FoodItem[]>(initialFoodData);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const appearance = Appearance.getColorScheme();
   const { mealRepository } = useDatabaseConnection();
 
-  function handleSearch(text: string): void {
-    const filteredResults = allFoodData.filter((item) =>
-      item.name.toLowerCase().includes(text.toLowerCase()),
-    );
-    setSearchResults(filteredResults);
+  const [searchResults, setSearchResults] = useState<FoodDTO[]>([]);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+
+  const [searchText, setSearchText] = useState('');
+  const [searchPage, setSearchPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  async function handleSearch(text: string) {
+    setSearchText(text);
+    if (text.length === 0) {
+      setSearchResults([]);
+      return;
+    }
+    let page = searchPage;
+    if (text !== searchText) {
+      setLoading(true);
+      page = 0;
+      setSearchPage(0);
+    }
+    const result = await getFoods(text, page);
+    if (page === 0) setSearchResults(result);
+    else setSearchResults((searchResults) => [...searchResults, ...result]);
+    setLoading(false);
   }
 
-  function handleSelectItem(id: number): void {
+  function handleSelectItem(id: string): void {
     setSelectedItems((prevSelectedItems) =>
       prevSelectedItems.includes(id)
         ? prevSelectedItems.filter((item) => item !== id)
@@ -103,11 +86,10 @@ export default function DescriptionScreen() {
 
   async function handleAddItems(): Promise<void> {
     if (selectedItems.length > 0) {
-      console.log(`Adicionar alimentos com IDs ${selectedItems} à refeição ${mealId}`);
       for (const item of selectedItems) {
-        const food = allFoodData.filter((value) => value.id === item)[0];
+        const food = searchResults.filter((value) => value.food_id === item)[0];
         await mealRepository.createFood(
-          food.name,
+          food.food_name,
           food.quantity,
           food.calories,
           new Date(),
@@ -118,48 +100,48 @@ export default function DescriptionScreen() {
     }
   }
 
+  useEffect(() => {
+    handleSearch(searchText);
+  }, [searchPage]);
+
   return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: appearance === 'dark' ? '#333333' : '#FFFCEB' },
-      ]}>
+    <View style={[styles.container]} darkColor="#3C3C3C" lightColor="#FFFCEB">
       <Header title={''} />
       <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
         <Feather name="arrow-left" size={24} style={styles.arrow} />
       </TouchableOpacity>
-      <Text style={[styles.title, { color: appearance === 'dark' ? '#FFFFFF' : '#547260' }]}>
+      <Text style={[styles.title]} darkColor="#547260" lightColor="#547260">
         Adicionar Alimentos
       </Text>
       <SearchBar placeholder="Digite um alimento" onChangeText={handleSearch} />
       <FlatList
         data={searchResults}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.food_id}
+        onEndReached={() => setSearchPage(searchPage + 1)}
+        ListFooterComponent={loading ? <ActivityIndicator size="large" /> : null}
         renderItem={({ item, index }) => (
           <FoodCard
             item={item}
             index={index}
             onSelectItem={handleSelectItem}
-            isSelected={selectedItems.includes(item.id)}
+            isSelected={selectedItems.includes(item.food_id)}
           />
         )}
       />
       <View style={styles.bottomButtons}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity
-            style={[
-              styles.notFoundButton,
-              { backgroundColor: appearance === 'dark' ? '#555555' : '#76A689' },
-            ]}>
+            style={[styles.notFoundButton]}
+            darkColor="#555555"
+            lightColor="#76A689">
             <Text style={[styles.buttonText, { color: '#FFFFFF' }]}>
               Não encontrei meu alimento
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[
-              styles.addButton,
-              { backgroundColor: appearance === 'dark' ? '#333333' : '#547260' },
-            ]}
+            style={[styles.addButton]}
+            darkColor="#555555"
+            lightColor="#76A689"
             onPress={handleAddItems}>
             <Text style={[styles.buttonText, { color: '#FFFFFF' }]}>Adicionar</Text>
           </TouchableOpacity>
@@ -172,7 +154,6 @@ export default function DescriptionScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFCEB',
   },
   title: {
     fontSize: 20,
@@ -202,14 +183,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 10,
     paddingHorizontal: 15,
-  },
-  selectedItem: {
     marginTop: 10,
     marginRight: 10,
     marginLeft: 10,
-    borderColor: '#76A689',
-    borderWidth: 2,
     borderRadius: 10,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  selectedItem: {
+    borderColor: '#76A689',
   },
   numberContainer: {
     alignItems: 'center',
@@ -238,6 +220,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 10,
+    opacity: 0.8,
   },
   bottomButtons: {
     justifyContent: 'center',

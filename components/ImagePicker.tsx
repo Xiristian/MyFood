@@ -1,7 +1,7 @@
 import * as DefaultImagePicker from 'expo-image-picker';
 import { Button, View, Text } from './Themed';
 import { readFoodsFromImage } from '@/backend/read-foods-from-image';
-import { FoodDTO } from '@/backend/FoodDTO';
+import { FoodFromImageDTO } from '@/backend/FoodFromImageDTO';
 import { useEffect } from 'react';
 import { Feather } from '@expo/vector-icons';
 import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
@@ -12,23 +12,9 @@ export default function ImagePicker({
   setError,
 }: {
   setImage: React.Dispatch<React.SetStateAction<string>>;
-  setFoods: React.Dispatch<React.SetStateAction<FoodDTO[]>>;
+  setFoods: React.Dispatch<React.SetStateAction<FoodFromImageDTO[]>>;
   setError: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  useEffect(() => {
-    (async () => {
-      const { status: cameraStatus } = await DefaultImagePicker.requestCameraPermissionsAsync();
-      const { status: mediaLibraryStatus } =
-        await DefaultImagePicker.requestMediaLibraryPermissionsAsync();
-      if (cameraStatus !== 'granted' || mediaLibraryStatus !== 'granted') {
-        Alert.alert(
-          'Permissão necessária',
-          'Precisamos de permissão para acessar a câmera e a galeria.',
-        );
-      }
-    })();
-  }, []);
-
   const pickImageFromLibrary = async () => {
     const imagePickerOptions: DefaultImagePicker.ImagePickerOptions = {
       mediaTypes: DefaultImagePicker.MediaTypeOptions.Images,

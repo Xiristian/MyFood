@@ -3,6 +3,7 @@ import {
   View as DefaultView,
   Button as DefaultButton,
   TextInput as DefaultInput,
+  TouchableOpacity as DefaulTouchableOpacity,
 } from 'react-native';
 
 import Colors from '@/constants/Colors';
@@ -17,6 +18,7 @@ export type TextProps = ThemeProps & DefaultText['props'];
 export type ViewProps = ThemeProps & DefaultView['props'];
 export type ButtonProps = ThemeProps & DefaultButton['props'];
 export type InputProps = ThemeProps & DefaultInput['props'];
+export type TouchableOpacityProps = ThemeProps & DefaulTouchableOpacity['props'];
 
 export function useThemeColor(
   props: { light?: string; dark?: string },
@@ -43,7 +45,12 @@ export function View(props: ViewProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
   const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
 
-  return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
+  return (
+    <DefaultView
+      style={[{ backgroundColor: lightColor || darkColor ? backgroundColor : undefined }, style]}
+      {...otherProps}
+    />
+  );
 }
 
 export function Button(props: ButtonProps) {
@@ -58,4 +65,16 @@ export function TextInput(props: InputProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
 
   return <DefaultInput style={[{ color }, style]} {...otherProps} />;
+}
+
+export function TouchableOpacity(props: TouchableOpacityProps) {
+  const { style, lightColor, darkColor, ...otherProps } = props;
+  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
+
+  return (
+    <DefaulTouchableOpacity
+      style={[{ backgroundColor: lightColor || darkColor ? backgroundColor : undefined }, style]}
+      {...otherProps}
+    />
+  );
 }

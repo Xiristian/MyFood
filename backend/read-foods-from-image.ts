@@ -1,10 +1,10 @@
 import axios from 'axios';
 import * as fs from 'expo-file-system';
-import { FoodDTO } from './FoodDTO';
+import { FoodFromImageDTO } from './FoodFromImageDTO';
 
 interface ResultDTO {
   error: string;
-  foods: FoodDTO[];
+  foods: FoodFromImageDTO[];
 }
 
 export const readFoodsFromImage = async (uri: string): Promise<ResultDTO> => {
@@ -14,7 +14,7 @@ export const readFoodsFromImage = async (uri: string): Promise<ResultDTO> => {
     });
 
     const { data }: { data: ResultDTO } = await axios.post(
-      `${process.env.EXPO_PUBLIC_API_URL}/read-foods-from-image?is-test=${process.env.EXPO_PUBLIC_IS_TEST}`,
+      `${process.env.EXPO_PUBLIC_API_URL}/read-foods-from-image`,
       { image },
       { timeout: 20000 },
     );
