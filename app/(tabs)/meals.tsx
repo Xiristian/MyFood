@@ -7,6 +7,7 @@ import { useDatabaseConnection } from '@/database/DatabaseConnection';
 import { useFocusEffect, useNavigation } from 'expo-router';
 import Header from '@/components/Header';
 import RenderFoods from '@/components/RenderFoods';
+import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types';
 
 interface ItemMeal extends Meal {
   isExpanded?: Boolean;
@@ -87,13 +88,13 @@ export default function TabTwoScreen() {
   };
 
   const RenderExpandedContent = ({ id }: { id: number }) => {
-    const navigation = useNavigation();
+    type RootStackParamList = { camera: { id: number }; 'description-screen': { id: number } };
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     return (
       <View style={styles.expandedContent}>
         <View style={styles.expandedContentIconsRow} lightColor="#FFFCEB" darkColor="#3C3C3C">
           <TouchableOpacity
             onPress={() => {
-              //@ts-ignore
               navigation.navigate('camera', { id: id });
             }}>
             <View style={styles.iconWithText} lightColor="#FFFCEB" darkColor="#3C3C3C">
@@ -103,8 +104,7 @@ export default function TabTwoScreen() {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              //@ts-ignore
-              navigation.navigate('description-screen', { mealId: id });
+              navigation.navigate('description-screen', { id: id });
             }}>
             <View style={styles.iconWithText} lightColor="#FFFCEB" darkColor="#3C3C3C">
               <Feather name="edit" size={24} color="#76A689" style={styles.icon} />

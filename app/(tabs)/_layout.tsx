@@ -49,7 +49,7 @@ function CustomTabBarButton({
 }
 
 export default function TabLayout() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [selectedTab, setSelectedTab] = useState('user');
 
   const handleLogin = () => {
@@ -66,7 +66,7 @@ export default function TabLayout() {
             tabBarStyle: styles.tabBar,
           }}>
           <Tabs.Screen
-            name="user"
+            name="index"
             options={{
               tabBarButton: (props) => (
                 <CustomTabBarButton

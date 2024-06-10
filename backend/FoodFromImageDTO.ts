@@ -1,4 +1,4 @@
-export interface FoodDTO {
+export interface FoodFromImageDTO {
   name: string;
   filling: string[];
   fillingIdentified: boolean;

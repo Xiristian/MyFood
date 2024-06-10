@@ -13,7 +13,7 @@ import React from 'react';
 export { ErrorBoundary } from 'expo-router';
 
 export const unstable_settings = {
-  initialRouteName: 'user',
+  initialRouteName: '(tabs)',
 };
 
 SplashScreen.preventAutoHideAsync();
@@ -52,6 +52,7 @@ function RootLayoutNav() {
           <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
           <Stack.Screen name="description-screen" options={{ headerShown: false }} />
           <Stack.Screen name="camera" options={{ headerShown: false }} />
+          <Stack.Screen name="user-register" options={{ headerShown: false }} />
         </Stack>
       </ThemeProvider>
     </DatabaseConnectionProvider>

@@ -3,7 +3,7 @@ import { Text, View } from '@/components/Themed';
 import { useEffect, useState } from 'react';
 import { Feather } from '@expo/vector-icons';
 import CustomImagePicker from '@/components/ImagePicker';
-import { FoodDTO } from '@/backend/FoodDTO';
+import { FoodFromImageDTO } from '../backend/FoodFromImageDTO';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import Header from '@/components/Header';
 import { useDatabaseConnection } from '@/database/DatabaseConnection';
@@ -15,7 +15,7 @@ export default function Camera() {
   const id = route.params?.id;
 
   const [image, setImage] = useState('');
-  const [foods, setFoods] = useState<FoodDTO[]>([]);
+  const [foods, setFoods] = useState<FoodFromImageDTO[]>([]);
   const [error, setError] = useState('');
   const { mealRepository } = useDatabaseConnection();
 
