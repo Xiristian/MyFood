@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as fs from 'expo-file-system';
 import { FoodFromImageDTO } from './FoodFromImageDTO';
+import { isTest } from './test';
 
 interface ResultDTO {
   error: string;
@@ -8,6 +9,7 @@ interface ResultDTO {
 }
 
 export const readFoodsFromImage = async (uri: string): Promise<ResultDTO> => {
+  if (isTest) return test;
   try {
     const image = await fs.readAsStringAsync(uri, {
       encoding: fs.EncodingType.Base64,
@@ -28,4 +30,31 @@ export const readFoodsFromImage = async (uri: string): Promise<ResultDTO> => {
       foods: [],
     };
   }
+};
+
+const test: ResultDTO = {
+  error: '',
+  foods: [
+    {
+      name: 'Pizza',
+      filling: ['queijo', 'presunto'],
+      fillingIdentified: true,
+      quantity: 1,
+      unit: 'fatia',
+    },
+    {
+      name: 'Macarrão',
+      filling: [],
+      fillingIdentified: false,
+      quantity: 1,
+      unit: 'prato',
+    },
+    {
+      name: 'Bolo',
+      filling: ['chocolate'],
+      fillingIdentified: false,
+      quantity: 2,
+      unit: 'fatia',
+    },
+  ],
 };
