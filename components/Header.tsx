@@ -1,19 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { useTheme } from '@react-navigation/native';
-import { router } from 'expo-router';
+import Sidebar from './Sidebar';
 
 interface HeaderProps {
   title: string;
 }
 
 const Header: React.FC<HeaderProps> = ({ title }) => {
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen);
+  };
+
   return (
-    <View style={[styles.headerContainer]}>
-      <View style={styles.header}></View>
-    </View>
+    <>
+      <View style={[styles.headerContainer]}>
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.menuIcon} onPress={toggleSidebar}>
+            <FontAwesome name="bars" size={24} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>{title}</Text>
+        </View>
+      </View>
+      <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} />
+    </>
   );
 };
 
@@ -34,6 +46,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 8,
+    color: '#fff',
+  },
+  menuIcon: {
+    marginTop: 65, 
   },
 });
 

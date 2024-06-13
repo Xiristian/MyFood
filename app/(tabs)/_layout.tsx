@@ -66,20 +66,6 @@ export default function TabLayout() {
             tabBarStyle: styles.tabBar,
           }}>
           <Tabs.Screen
-            name="index"
-            options={{
-              tabBarButton: (props) => (
-                <CustomTabBarButton
-                  {...props}
-                  setSelectedTab={setSelectedTab}
-                  selectedTab={selectedTab}
-                  name="user">
-                  <FontAwesome name="user" size={30} color="white" />
-                </CustomTabBarButton>
-              ),
-            }}
-          />
-          <Tabs.Screen
             name="meals"
             options={{
               tabBarButton: (props) => (
@@ -89,6 +75,20 @@ export default function TabLayout() {
                   selectedTab={selectedTab}
                   name="meals">
                   <MaterialCommunityIcons name="carrot" size={40} color="white" />
+                </CustomTabBarButton>
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="index"
+            options={{
+              tabBarButton: (props) => (
+                <CustomTabBarButton
+                  {...props}
+                  setSelectedTab={setSelectedTab}
+                  selectedTab={selectedTab}
+                  name="user">
+                  <FontAwesome name="user" size={30} color="white" />
                 </CustomTabBarButton>
               ),
             }}

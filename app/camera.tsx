@@ -31,7 +31,7 @@ export default function Camera() {
     <View style={styles.container}>
       <Header title={''} />
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Feather name="arrow-left" size={24} style={styles.arrow} />
+        <Feather name="arrow-left" size={25} style={styles.arrow} />
       </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.container}>
         <CustomImagePicker setImage={setImage} setFoods={setFoods} setError={setError} />
