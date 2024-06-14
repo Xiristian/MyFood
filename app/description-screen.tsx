@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import { Feather } from '@expo/vector-icons';
 import SearchBar from '@/components/SearchBar';
 import { router } from 'expo-router';
+import { FAB } from 'react-native-paper';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { useDatabaseConnection } from '@/database/DatabaseConnection';
 import { FoodDTO, getFoods } from '@/backend/get-foods';
@@ -108,7 +109,7 @@ export default function DescriptionScreen() {
     <View style={[styles.container]} darkColor="#3C3C3C" lightColor="#FFFCEB">
       <Header title={''} />
       <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Feather name="arrow-left" size={24} style={styles.arrow} />
+        <Feather name="arrow-left" size={25} style={styles.arrow} />
       </TouchableOpacity>
       <Text style={[styles.title]} darkColor="#547260" lightColor="#547260">
         Adicionar Alimentos
@@ -130,21 +131,11 @@ export default function DescriptionScreen() {
       />
       <View style={styles.bottomButtons}>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.notFoundButton]}
-            darkColor="#555555"
-            lightColor="#76A689">
-            <Text style={[styles.buttonText, { color: '#FFFFFF' }]}>
-              Não encontrei meu alimento
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.addButton]}
-            darkColor="#555555"
-            lightColor="#76A689"
-            onPress={handleAddItems}>
-            <Text style={[styles.buttonText, { color: '#FFFFFF' }]}>Adicionar</Text>
-          </TouchableOpacity>
+          <FAB
+            style={styles.fab}
+            icon={() => <Feather name="plus" size={24} color='white' />} 
+            onPress={handleAddItems}
+          />
         </View>
       </View>
     </View>
@@ -168,7 +159,7 @@ const styles = StyleSheet.create({
     left: 10,
   },
   arrow: {
-    marginTop: 40,
+    marginTop: 20,
     color: 'white',
   },
   separator: {
@@ -233,23 +224,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
   },
-  addButton: {
-    width: 150,
-    height: 52,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 20,
-  },
-  notFoundButton: {
-    width: 200,
-    height: 52,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 20,
-  },
-  buttonText: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    textAlign: 'center',
+  fab: {
+    backgroundColor: '#344e41',
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
   },
 });
