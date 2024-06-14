@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, FlatList, ActivityIndicator } from 'react-native';
-import { Text, TouchableOpacity, View } from '@/components/Themed';
+import { StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { Text, View } from '@/components/Themed';
 import Header from '@/components/Header';
-import { Feather } from '@expo/vector-icons';
 import SearchBar from '@/components/SearchBar';
 import { router } from 'expo-router';
 import { FAB } from 'react-native-paper';
+import { Feather } from '@expo/vector-icons';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { useDatabaseConnection } from '@/database/DatabaseConnection';
 import { FoodDTO, getFoods } from '@/backend/get-foods';
@@ -23,7 +23,8 @@ const FoodCard: React.FC<FoodCardProps> = ({ item, index, onSelectItem, isSelect
       <View style={[styles.separator]} darkColor="#333333" lightColor="#E3E3E3" />
       <TouchableOpacity
         style={[styles.foodItem, isSelected && styles.selectedItem]}
-        onPress={() => onSelectItem(item.food_id)}>
+        onPress={() => onSelectItem(item.food_id)}
+      >
         <View style={styles.numberContainer}>
           <Text style={styles.numberText}>{index + 1}</Text>
         </View>
@@ -107,13 +108,8 @@ export default function DescriptionScreen() {
 
   return (
     <View style={[styles.container]} darkColor="#3C3C3C" lightColor="#FFFCEB">
-      <Header title={''} />
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Feather name="arrow-left" size={25} style={styles.arrow} />
-      </TouchableOpacity>
-      <Text style={[styles.title]} darkColor="#547260" lightColor="#547260">
-        Adicionar Alimentos
-      </Text>
+      <Header showBackButton title={''} />
+      <Text style={styles.pageTitle}>Adicionar Alimentos</Text>
       <SearchBar placeholder="Digite um alimento" onChangeText={handleSearch} />
       <FlatList
         data={searchResults}
@@ -133,7 +129,7 @@ export default function DescriptionScreen() {
         <View style={styles.buttonContainer}>
           <FAB
             style={styles.fab}
-            icon={() => <Feather name="plus" size={24} color='white' />} 
+            icon={() => <Feather name="plus" size={24} color="white" />}
             onPress={handleAddItems}
           />
         </View>
@@ -146,21 +142,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  title: {
+  pageTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
     marginTop: 20,
     textAlign: 'center',
-  },
-  backButton: {
-    position: 'absolute',
-    top: 20,
-    left: 10,
-  },
-  arrow: {
-    marginTop: 20,
-    color: 'white',
+    color: '#344e41',  // Verde musgo escuro
   },
   separator: {
     height: 1,
