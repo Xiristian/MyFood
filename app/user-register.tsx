@@ -1,8 +1,18 @@
 import React, { useState } from 'react';
-import { StyleSheet, Alert, Pressable, Image, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import {
+  StyleSheet,
+  Alert,
+  Pressable,
+  Image,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
 import { Text, View, TextInput } from '@/components/Themed';
 import * as ImagePicker from 'expo-image-picker';
 import { FontAwesome } from '@expo/vector-icons';
+import { register } from '@/backend/user';
 
 const CadastroScreen = () => {
   const [image, setImage] = useState<string | null>(null);
@@ -25,6 +35,14 @@ const CadastroScreen = () => {
       return;
     }
 
+    register({
+      name: nome,
+      password: senha,
+      age: parseInt(idade),
+      goal: parseFloat(pesoMeta),
+      weight: parseFloat(pesoAtual),
+      height: parseFloat(altura),
+    });
     console.log('Dados de cadastro:', {
       nome,
       idade,
@@ -51,8 +69,7 @@ const CadastroScreen = () => {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.container} lightColor="#FFFCEB" darkColor="#3C3C3C">
           <Pressable style={styles.imageContainer} onPress={pickImage}>
@@ -62,17 +79,16 @@ const CadastroScreen = () => {
               <FontAwesome name="camera" size={40} color="#547260" />
             )}
           </Pressable>
-          
+
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Nome</Text>
-            <TextInput 
-              style={styles.input} 
-              value={nome} 
-              onChangeText={setNome} 
-            />
+            <TextInput style={styles.input} value={nome} onChangeText={setNome} />
           </View>
-          
-          <View style={[styles.row, styles.inputContainer]} lightColor="#FFFCEB" darkColor="#3C3C3C">
+
+          <View
+            style={[styles.row, styles.inputContainer]}
+            lightColor="#FFFCEB"
+            darkColor="#3C3C3C">
             <View style={styles.halfWidthContainer}>
               <Text style={styles.label}>Idade</Text>
               <TextInput
@@ -92,8 +108,11 @@ const CadastroScreen = () => {
               />
             </View>
           </View>
-          
-          <View style={[styles.row, styles.inputContainer]} lightColor="#FFFCEB" darkColor="#3C3C3C">
+
+          <View
+            style={[styles.row, styles.inputContainer]}
+            lightColor="#FFFCEB"
+            darkColor="#3C3C3C">
             <View style={styles.halfWidthContainer}>
               <Text style={styles.label}>Peso Atual (kg)</Text>
               <TextInput
@@ -113,17 +132,12 @@ const CadastroScreen = () => {
               />
             </View>
           </View>
-          
+
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Senha</Text>
-            <TextInput
-              style={styles.input}
-              secureTextEntry
-              value={senha}
-              onChangeText={setSenha}
-            />
+            <TextInput style={styles.input} secureTextEntry value={senha} onChangeText={setSenha} />
           </View>
-          
+
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Confirmar Senha</Text>
             <TextInput
@@ -172,7 +186,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#547260',
     borderRadius: 10,
     paddingHorizontal: 10,
-    color: '#FFF', 
+    color: '#FFF',
   },
   halfWidthContainer: {
     width: '48%',

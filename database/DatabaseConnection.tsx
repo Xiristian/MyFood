@@ -6,10 +6,12 @@ import { FoodRepository } from './repositories/FoodRepository';
 import { MealRepository } from './repositories/MealRepository';
 import { Meal } from './entities/meal-entity';
 import { Food } from './entities/food-entity';
+import { UserRepository } from './repositories/UserRepository';
 
 interface DatabaseConnectionContextData {
   foodRepository: FoodRepository;
   mealRepository: MealRepository;
+  userRepository: UserRepository;
   connection: DataSource | null;
 }
 
@@ -60,6 +62,7 @@ export const DatabaseConnectionProvider: React.FC<{
       value={{
         foodRepository: new FoodRepository(connection),
         mealRepository: new MealRepository(connection),
+        userRepository: new UserRepository(connection),
         connection: connection,
       }}>
       {children}

@@ -13,6 +13,9 @@ export class User extends BaseEntity {
   age: number;
 
   @Column()
+  goal: number;
+
+  @Column()
   weight: number;
 
   @Column()
