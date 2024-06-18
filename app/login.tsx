@@ -40,10 +40,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     }
   };
 
-  /* <Image
-source={require('../../assets/images/loginImage.png')}
-style={styles.image}
-/>*/
+   
   return (
     <View style={styles.container}>
       <FloatingSVG />
