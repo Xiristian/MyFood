@@ -6,10 +6,13 @@ import { FoodRepository } from './repositories/FoodRepository';
 import { MealRepository } from './repositories/MealRepository';
 import { Meal } from './entities/meal-entity';
 import { Food } from './entities/food-entity';
+import { UserRepository } from './repositories/UserRepository';
+import { User } from './entities/user-entity';
 
 interface DatabaseConnectionContextData {
   foodRepository: FoodRepository;
   mealRepository: MealRepository;
+  userRepository: UserRepository;
   connection: DataSource | null;
 }
 
@@ -27,8 +30,8 @@ export const DatabaseConnectionProvider: React.FC<{
       type: 'expo',
       database: 'myfood.db',
       driver: SQLite,
-      entities: [Meal, Food],
-      synchronize: true,
+      entities: [Meal, Food, User],
+      synchronize: true
     });
     setConnection(await createdConnection.initialize());
   }, []);
@@ -60,6 +63,7 @@ export const DatabaseConnectionProvider: React.FC<{
       value={{
         foodRepository: new FoodRepository(connection),
         mealRepository: new MealRepository(connection),
+        userRepository: new UserRepository(connection),
         connection: connection,
       }}>
       {children}

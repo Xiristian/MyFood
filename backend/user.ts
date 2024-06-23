@@ -2,15 +2,15 @@ import axios from 'axios';
 import { isTest } from './test';
 
 export interface UserDTO {
-  name: string;
-  password: string;
+  name?: string;
+  password?: string;
   age?: number;
   height?: number;
   weight?: number;
   goal?: number;
 }
 
-export const login = async (user: UserDTO): Promise<UserDTO | string> => {
+export const login = async (user: UserDTO): Promise<UserDTO > => {
   if (isTest) return test;
   try {
     const { data }: { data: UserDTO } = await axios.post(
@@ -22,7 +22,7 @@ export const login = async (user: UserDTO): Promise<UserDTO | string> => {
     return data;
   } catch (error) {
     console.error(error);
-    return 'Erro ao fazer login!';
+    return {};
   }
 };
 

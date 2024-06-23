@@ -3,21 +3,24 @@ import { BaseEntity } from './base-entity';
 
 @Entity()
 export class User extends BaseEntity {
-  @Column()
+  @Column('varchar')
   name: string;
 
-  @Column()
+  @Column('varchar')
   email: string;
 
-  @Column()
+  @Column('int')
   age: number;
 
-  @Column()
+  @Column('numeric')
+  goal: number;
+
+  @Column('numeric')
   weight: number;
 
-  @Column()
+  @Column('numeric')
   height: number;
 
-  @Column()
+  @Column('varchar')
   gender: string;
 }

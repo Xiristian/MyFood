@@ -2,13 +2,17 @@ import { useState } from 'react';
 import { View, TextInput, StyleSheet, Alert, Image } from 'react-native';
 import LoginButton from '../components/loginButton';
 import axios from 'axios';
+import { useDatabaseConnection } from '@/database/DatabaseConnection';
 import FloatingSVG from '../components/loginImg';
+import { login } from '@/backend/user';
 
 interface LoginPageProps {
   onLogin: () => void;
 }
 
 const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
+  const { userRepository } = useDatabaseConnection();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -21,13 +25,12 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     }
   };*/
     try {
-      const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/login`, {
-        email,
-        password,
-      });
+      const response = await login({ name: email, password });
 
-      if (response.data.success) {
+      if (response?.name) {
         console.log('Login realizado com sucesso!');
+
+        await userRepository.create(response);
       } else {
         Alert.alert('Erro', 'Credenciais inválidas. Por favor, tente novamente.');
       }
@@ -37,10 +40,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     }
   };
 
-  /* <Image
-source={require('../../assets/images/loginImage.png')}
-style={styles.image}
-/>*/
+   
   return (
     <View style={styles.container}>
       <FloatingSVG />
