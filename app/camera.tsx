@@ -5,7 +5,6 @@ import { Feather } from '@expo/vector-icons';
 import CustomImagePicker from '@/components/ImagePicker';
 import { FoodFromImageDTO } from '../backend/FoodFromImageDTO';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import Header from '@/components/Header';
 import { useDatabaseConnection } from '@/database/DatabaseConnection';
 
 export default function Camera() {
@@ -30,7 +29,6 @@ export default function Camera() {
 
   return (
     <View style={styles.container}>
-      <Header title={''} />
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Feather name="arrow-left" size={25} style={styles.arrow} />
       </TouchableOpacity>

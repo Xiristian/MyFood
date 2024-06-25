@@ -1,21 +1,13 @@
 import { useState } from 'react';
-import {
-  View,
-  TextInput,
-  StyleSheet,
-  Alert,
-  Image,
-  Pressable,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import { StyleSheet, Alert } from 'react-native';
 import LoginButton from '../components/loginButton';
 import axios from 'axios';
 import { useDatabaseConnection } from '@/database/DatabaseConnection';
-import FloatingSVG from '../components/loginImg';
+import Logo from '../components/Logo';
 import { login } from '@/backend/user';
 import { useNavigation } from 'expo-router';
 import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types';
+import { Text, TextInput, TouchableOpacity, View } from '@/components/Themed';
 
 interface LoginPageProps {
   onLogin: () => void;
@@ -30,19 +22,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const handleLogin = async () => {
-    /* if (email === 'usuario' && password === 'senha123') {
-      console.log('Login realizado com sucesso!');
-      onLogin();
-    } else {
-      Alert.alert('Erro', 'Credenciais inválidas. Por favor, tente novamente.');
-    }
-  };*/
     try {
-      const response = await login({ name: email, password });
+      const response = await login({ email: email, password });
 
-      if (response?.name) {
-        console.log('Login realizado com sucesso!');
-
+      if (response?.email) {
         await userRepository.create(response);
         onLogin();
       } else {
@@ -55,8 +38,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.formContainer}>
+    <View style={styles.container} lightColor="#FFFCEB" darkColor="#3C3C3C">
+      <Logo />
+      <View style={styles.formContainer} >
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
@@ -94,7 +78,6 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFCEB',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -129,15 +112,3 @@ const styles = StyleSheet.create({
 });
 
 export default LoginPage;
-
-/* signUpText: {
-    color: '#76A689',
-    textAlign: 'center',
-    textDecorationLine: 'underline',
-  },
-   </View>
-        <Pressable onPress={handleSignUp}>
-          <Text style={styles.signUpText}>Não possui cadastro? Cadastrar-se</Text>
-        </Pressable>
-      </View>
-      */
