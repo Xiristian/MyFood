@@ -32,10 +32,12 @@ const RenderItem = ({
   item,
   date,
   toggleExpansion,
+  loadData,
 }: {
   item: ItemMeal;
   date: Date;
   toggleExpansion: any;
+  loadData: any;
 }) => {
   function ArrowIcon() {
     if (item.isExpanded)
@@ -54,16 +56,26 @@ const RenderItem = ({
           <ArrowIcon />
         </TouchableOpacity>
       </View>
-      {item.isExpanded ? <RenderFoods foods={item.foods} /> : null}
-      {item.isExpanded ? <RenderExpandedContent id={item.id} date={date} /> : null}
+      {item.isExpanded ? <RenderFoods foods={item.foods} loadData={loadData} /> : null}
+      {item.isExpanded ? (
+        <RenderExpandedContent id={item.id} date={date} loadData={loadData} />
+      ) : null}
     </View>
   );
 };
 
-const RenderExpandedContent = ({ id, date }: { id: number; date: Date }) => {
+const RenderExpandedContent = ({
+  id,
+  date,
+  loadData,
+}: {
+  id: number;
+  date: Date;
+  loadData: any;
+}) => {
   type RootStackParamList = {
-    camera: { id: number; date: Date };
-    'description-screen': { id: number; date: Date };
+    camera: { id: number; date: Date; loadData: any };
+    'description-screen': { id: number; date: Date; loadData: any };
   };
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
@@ -71,7 +83,7 @@ const RenderExpandedContent = ({ id, date }: { id: number; date: Date }) => {
       <View style={styles.expandedContentIconsRow} lightColor="#FFFCEB" darkColor="#3C3C3C">
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('camera', { id: id, date: date });
+            navigation.navigate('camera', { id: id, date: date, loadData });
           }}>
           <View style={styles.iconWithText} lightColor="#FFFCEB" darkColor="#3C3C3C">
             <Feather name="camera" size={24} color="#76A689" style={styles.icon} />
@@ -80,7 +92,7 @@ const RenderExpandedContent = ({ id, date }: { id: number; date: Date }) => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('description-screen', { id: id, date: date });
+            navigation.navigate('description-screen', { id: id, date: date, loadData });
           }}>
           <View style={styles.iconWithText} lightColor="#FFFCEB" darkColor="#3C3C3C">
             <Feather name="edit" size={24} color="#76A689" style={styles.icon} />
@@ -113,18 +125,18 @@ export default function TabTwoScreen() {
     let meals = await mealRepository.findAll();
     if (!meals || meals.length === 0) meals = await mealRepository.createMeals(initialData);
     meals = await mealRepository.findByDate(date);
-    setData(meals);
+    setData((data) => {
+      for (let i = 0; i < meals.length; i++) {
+        //@ts-ignore
+        meals[i].isExpanded = data[i].isExpanded;
+      }
+      return meals;
+    });
   }
 
   useEffect(() => {
     loadData();
   }, [date]);
-
-  useFocusEffect(
-    useCallback(() => {
-      loadData();
-    }, []),
-  );
 
   const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     const currentDate = selectedDate || date;
@@ -146,6 +158,7 @@ export default function TabTwoScreen() {
           return item;
         }),
       );
+    loadData();
   };
 
   return (
@@ -180,7 +193,12 @@ export default function TabTwoScreen() {
           data={data}
           keyExtractor={(item) => item.id.toString()}
           renderItem={(item) => (
-            <RenderItem item={item.item} date={date} toggleExpansion={toggleExpansion} />
+            <RenderItem
+              item={item.item}
+              date={date}
+              toggleExpansion={toggleExpansion}
+              loadData={loadData}
+            />
           )}
         />
       </View>

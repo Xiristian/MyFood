@@ -1,13 +1,14 @@
 import { Food } from '@/database/entities/food-entity';
 import { Text, TouchableOpacity, View } from '@/components/Themed';
 import { Feather } from '@expo/vector-icons';
-import { StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useDatabaseConnection } from '@/database/DatabaseConnection';
 
-const RenderFoodItem = ({ food }: { food: Food }) => {
+const RenderFoodItem = ({ food, loadData }: { food: Food; loadData?: any }) => {
   const { foodRepository } = useDatabaseConnection();
-  function onDelete(id:number){
-    foodRepository.deleteFood(id)
+  function onDelete(id: number) {
+    foodRepository.deleteFood(id);
+    loadData();
   }
   return (
     <View style={styles.foodItem} lightColor="#FFFCEB" darkColor="#3C3C3C">

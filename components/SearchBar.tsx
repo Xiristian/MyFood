@@ -14,6 +14,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder, onChangeText }) => {
 
   const handleTextChange = (newText: string) => {
     setText(newText);
+    onChangeText(newText);
   };
 
   const clearText = () => {

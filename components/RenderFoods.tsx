@@ -3,12 +3,12 @@ import React from 'react';
 import { FlatList } from 'react-native';
 import RenderFoodItem from './RenderFoodItem';
 
-const RenderFoods = ({ foods }: { foods: Food[] }) => {
+const RenderFoods = ({ foods, loadData }: { foods: Food[]; loadData: any }) => {
   return (
     <FlatList
       data={foods}
       keyExtractor={(item) => item.id.toString()}
-      renderItem={(item) => <RenderFoodItem food={item.item} />}
+      renderItem={(item) => <RenderFoodItem food={item.item} loadData={loadData}/>}
     />
   );
 };
