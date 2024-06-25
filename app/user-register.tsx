@@ -65,11 +65,8 @@ const CadastroScreen: React.FC<LoginPageProps> = ({ onLogin }) => {
         height: parseFloat(altura),
       });
 
-      const response = await login({ name: nome, password: senha });
-
+      const response = await login({ email, password: senha });
       if (response?.name) {
-        console.log('Login realizado com sucesso!');
-
         await userRepository.create(response);
         if (onLogin) onLogin();
         else navigation.goBack();

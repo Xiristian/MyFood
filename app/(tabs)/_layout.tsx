@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import LoginPage from '../login';
 import { Pressable, View, StyleSheet, PressableProps, GestureResponderEvent } from 'react-native';
-import Logo from '@/components/Logo';
 
 interface CustomTabBarButtonProps extends PressableProps {
   children: React.ReactNode;
@@ -68,6 +67,20 @@ export default function TabLayout() {
                   selectedTab={selectedTab}
                   name="meals">
                   <MaterialCommunityIcons name="carrot" size={40} color="white" />
+                </CustomTabBarButton>
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="graphics"
+            options={{
+              tabBarButton: (props) => (
+                <CustomTabBarButton
+                  {...props}
+                  setSelectedTab={setSelectedTab}
+                  selectedTab={selectedTab}
+                  name="graphics">
+                  <Entypo name="bar-graph" size={30} color="white" />
                 </CustomTabBarButton>
               ),
             }}

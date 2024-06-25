@@ -78,6 +78,7 @@ function RootLayoutNav() {
           <Stack.Screen name="camera" options={{}} />
           <Stack.Screen name="user-register" options={{}} />
           <Stack.Screen name="login" options={{}} />
+          <Stack.Screen name="modal" options={{ presentation: 'containedTransparentModal' }} />
         </Stack>
       </ThemeProvider>
     </DatabaseConnectionProvider>
