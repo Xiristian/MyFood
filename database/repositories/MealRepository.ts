@@ -17,14 +17,19 @@ export class MealRepository {
   }
 
   async findByDate(date: Date): Promise<Meal[]> {
+    const startDate = new Date(date);
+    startDate.setUTCHours(0, 0, 0, -1);
+
+    const endDate = new Date(date);
+    endDate.setUTCHours(23, 59, 59, 999);
+
     const queryBuilder = this.mealRepository.createQueryBuilder('meal');
     const meals = await queryBuilder
-      .leftJoinAndSelect('meal.foods', 'foods')
-      .where('meal.date = :date', { date })
+      .leftJoinAndSelect('meal.foods', 'foods', 'date BETWEEN :startDate AND :endDate', { startDate, endDate })
       .getMany();
 
     return meals;
-  }
+}
 
   async createMeal(meal: Partial<Meal>[]): Promise<Meal[]> {
     return await this.mealRepository.save(meal);

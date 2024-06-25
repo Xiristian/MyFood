@@ -47,8 +47,9 @@ const FoodCard: React.FC<FoodCardProps> = ({ item, index, onSelectItem, isSelect
 };
 
 export default function DescriptionScreen() {
-  const route = useRoute<RouteProp<{ params: { id: number } }>>();
+  const route = useRoute<RouteProp<{ params: { id: number, date: Date } }>>();
   const mealId = route.params?.id;
+  const date = route.params?.date;
 
   const { mealRepository } = useDatabaseConnection();
 
@@ -93,7 +94,7 @@ export default function DescriptionScreen() {
           food.food_name,
           food.quantity,
           food.calories,
-          new Date(),
+          date,
           mealId,
         );
       }
