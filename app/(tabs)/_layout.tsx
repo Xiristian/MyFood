@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   tabBar: {
     flex: 1,
     backgroundColor: '#FFFCEB',
-    maxHeight: '8%',
+    maxHeight: '10%',
   },
   button: {
     flex: 1,

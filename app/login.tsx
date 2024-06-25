@@ -68,7 +68,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
         }}
         >
       <Text style={styles.text}>Não tem cadastro ainda? 
-      <Text style={styles.underline}>Cadastra-se</Text>
+      <Text style={styles.underline}> Cadastre-se</Text>
       </Text>       
        </TouchableOpacity>
     </View>
@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   text: {
+    marginTop:20,
     fontSize: 16,
     color: '#000',
   },
@@ -108,6 +109,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     color: '#76A689',
   },
+  
 
 });
 
