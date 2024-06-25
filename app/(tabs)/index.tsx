@@ -128,7 +128,7 @@ export default function TabTwoScreen() {
     setData((data) => {
       for (let i = 0; i < meals.length; i++) {
         //@ts-ignore
-        meals[i].isExpanded = data[i].isExpanded;
+        meals[i].isExpanded = data[i]?.isExpanded;
       }
       return meals;
     });

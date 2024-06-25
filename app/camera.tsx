@@ -10,9 +10,10 @@ import { useDatabaseConnection } from '@/database/DatabaseConnection';
 export default function Camera() {
   const navigation = useNavigation();
 
-  const route = useRoute<RouteProp<{ params: { id: number, date: Date } }>>();
+  const route = useRoute<RouteProp<{ params: { id: number, date: Date, loadData: any } }>>();
   const id = route.params?.id;
   const date = route.params?.date;
+  const loadData = route.params?.loadData;
 
   const [image, setImage] = useState('');
   const [foods, setFoods] = useState<FoodFromImageDTO[]>([]);
@@ -20,11 +21,12 @@ export default function Camera() {
   const { mealRepository } = useDatabaseConnection();
 
   useEffect(() => {
-    async function loadData() {
+    async function createFoods() {
       for (const food of foods)
         await mealRepository.createFood(food.name, food.quantity, 0, date, id);
+      loadData()
     }
-    loadData();
+    createFoods();
   }, [foods]);
 
   return (
@@ -33,7 +35,7 @@ export default function Camera() {
         <Feather name="arrow-left" size={25} style={styles.arrow} />
       </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.container}>
-        <CustomImagePicker setImage={setImage} setFoods={setFoods} setError={setError} />
+        <CustomImagePicker setImage={setImage} setFoods={setFoods} setError={setError} goBack={navigation.goBack} />
         {error ? (
           <Text>{error}</Text>
         ) : foods ? (
@@ -83,7 +85,7 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: '#E3E3E3', // Cor do separator
+    backgroundColor: '#E3E3E3',
     width: '80%',
     alignSelf: 'center',
     opacity: 0.8,
