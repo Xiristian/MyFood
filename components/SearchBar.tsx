@@ -14,7 +14,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder, onChangeText }) => {
 
   const handleTextChange = (newText: string) => {
     setText(newText);
-    onChangeText(newText);
   };
 
   const clearText = () => {
@@ -32,6 +31,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder, onChangeText }) => {
         placeholder={placeholder}
         value={text}
         onChangeText={handleTextChange}
+        onEndEditing={() => onChangeText(text)}
       />
       <Icon
         name="search"

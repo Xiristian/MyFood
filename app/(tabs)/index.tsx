@@ -93,14 +93,26 @@ const RenderExpandedContent = ({ id, date }: { id: number; date: Date }) => {
 };
 
 export default function TabTwoScreen() {
+  type RootStackParamList = { modal: any };
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { mealRepository } = useDatabaseConnection();
+
+  const initialData: ItemMeal[] = [
+    { id: 1, name: 'Desjejum', iconName: 'sunrise', order: 0, foods: [] },
+    { id: 2, name: 'Café da manhã', iconName: 'coffee', order: 0, foods: [] },
+    { id: 3, name: 'Almoço', iconName: 'sun', order: 0, foods: [] },
+    { id: 4, name: 'Café da tarde', iconName: 'coffee', order: 0, foods: [] },
+    { id: 5, name: 'Jantar', iconName: 'moon', order: 0, foods: [] },
+  ];
 
   const [data, setData] = useState<ItemMeal[]>([]);
   const [date, setDate] = useState(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
 
   async function loadData() {
-    const meals = await mealRepository.findByDate(date);
+    let meals = await mealRepository.findAll();
+    if (!meals || meals.length === 0) meals = await mealRepository.createMeals(initialData);
+    meals = await mealRepository.findByDate(date);
     setData(meals);
   }
 
@@ -138,7 +150,14 @@ export default function TabTwoScreen() {
 
   return (
     <View style={styles.container} lightColor="#FFFCEB" darkColor="#3C3C3C">
-      <Text style={styles.title}>Minhas refeições</Text>
+      <View style={{ flexDirection: 'row' }} lightColor="#FFFCEB" darkColor="#3C3C3C">
+        <Text style={styles.title}>Minhas refeições</Text>
+        <TouchableOpacity
+          style={{ top: '5.5%', left: 10 }}
+          onPress={() => navigation.navigate('modal')}>
+          <Feather name="plus" size={24} color="#76A689" />
+        </TouchableOpacity>
+      </View>
       <TouchableOpacity onPress={showDatepicker} style={styles.datePickerButton}>
         {Platform.OS !== 'ios' && (
           <Text style={styles.dateText}>{moment(date).format('DD/MM/yyyy')}</Text>

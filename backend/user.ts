@@ -14,13 +14,13 @@ export interface UserDTO {
 export const login = async (user: UserDTO): Promise<UserDTO> => {
   if (isTest) return test;
   try {
-    const { data }: { data: UserDTO } = await axios.post(
+    const { data }: { data: { user: UserDTO } } = await axios.post(
       `${process.env.EXPO_PUBLIC_API_URL}/login`,
       { user },
       { timeout: 20000 },
     );
 
-    return data;
+    return data.user;
   } catch (error) {
     console.error(error);
     return {};
@@ -30,7 +30,6 @@ export const login = async (user: UserDTO): Promise<UserDTO> => {
 export const register = async (user: UserDTO): Promise<string> => {
   try {
     if (isTest) return 'Sucesso ao cadastrar!';
-
     await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/register`, { user }, { timeout: 20000 });
     return 'Sucesso ao cadastrar!';
   } catch (error) {

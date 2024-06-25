@@ -25,14 +25,20 @@ export class MealRepository {
 
     const queryBuilder = this.mealRepository.createQueryBuilder('meal');
     const meals = await queryBuilder
-      .leftJoinAndSelect('meal.foods', 'foods', 'date BETWEEN :startDate AND :endDate', { startDate, endDate })
+      .leftJoinAndSelect('meal.foods', 'foods', 'date BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      })
       .getMany();
 
     return meals;
-}
+  }
 
-  async createMeal(meal: Partial<Meal>[]): Promise<Meal[]> {
+  async createMeal(meal: Partial<Meal>): Promise<Meal> {
     return await this.mealRepository.save(meal);
+  }
+  async createMeals(meals: Partial<Meal>[]): Promise<Meal[]> {
+    return await this.mealRepository.save(meals);
   }
 
   async createFood(

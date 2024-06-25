@@ -24,7 +24,6 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   const handleLogin = async () => {
     try {
       const response = await login({ email: email, password });
-
       if (response?.email) {
         await userRepository.create(response);
         onLogin();
@@ -40,7 +39,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   return (
     <View style={styles.container} lightColor="#FFFCEB" darkColor="#3C3C3C">
       <Logo />
-      <View style={styles.formContainer} >
+      <View style={styles.formContainer}>
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
@@ -64,13 +63,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
       <LoginButton onPress={handleLogin} />
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('user-register', {onLogin});
-        }}
-        >
-      <Text style={styles.text}>Não tem cadastro ainda? 
-      <Text style={styles.underline}> Cadastre-se</Text>
-      </Text>       
-       </TouchableOpacity>
+          navigation.navigate('user-register', { onLogin });
+        }}>
+        <Text style={styles.text}>
+          Não tem cadastro ainda?
+          <Text style={styles.underline}> Cadastre-se</Text>
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -101,7 +100,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   text: {
-    marginTop:20,
+    marginTop: 20,
     fontSize: 16,
     color: '#000',
   },
@@ -109,8 +108,6 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     color: '#76A689',
   },
-  
-
 });
 
 export default LoginPage;
