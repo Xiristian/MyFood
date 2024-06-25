@@ -8,6 +8,7 @@ import { FAB } from 'react-native-paper';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { useDatabaseConnection } from '@/database/DatabaseConnection';
 import { FoodDTO, getFoods } from '@/backend/get-foods';
+import { isTest } from '@/backend/test';
 
 interface FoodCardProps {
   item: FoodDTO;
@@ -46,7 +47,7 @@ const FoodCard: React.FC<FoodCardProps> = ({ item, index, onSelectItem, isSelect
 };
 
 export default function DescriptionScreen() {
-  const route = useRoute<RouteProp<{ params: { id: number, date: Date } }>>();
+  const route = useRoute<RouteProp<{ params: { id: number; date: Date; loadData: any } }>>();
   const mealId = route.params?.id;
   const date = route.params?.date;
 
@@ -72,7 +73,7 @@ export default function DescriptionScreen() {
       setSearchPage(0);
     }
     const result = await getFoods(text, page);
-    if (page === 0) setSearchResults(result);
+    if (page === 0 || isTest) setSearchResults(result);
     else setSearchResults((searchResults) => [...searchResults, ...result]);
     setLoading(false);
   }
@@ -89,14 +90,9 @@ export default function DescriptionScreen() {
     if (selectedItems.length > 0) {
       for (const item of selectedItems) {
         const food = searchResults.filter((value) => value.food_id === item)[0];
-        await mealRepository.createFood(
-          food.food_name,
-          food.quantity,
-          food.calories,
-          date,
-          mealId,
-        );
+        await mealRepository.createFood(food.food_name, food.quantity, food.calories, date, mealId);
       }
+      route.params?.loadData();
       router.back();
     }
   }
