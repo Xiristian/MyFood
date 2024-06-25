@@ -12,9 +12,16 @@ import {
 import { Text, View, TextInput } from '@/components/Themed';
 import * as ImagePicker from 'expo-image-picker';
 import { FontAwesome } from '@expo/vector-icons';
-import { register } from '@/backend/user';
+import { login, register } from '@/backend/user';
+import { useDatabaseConnection } from '@/database/DatabaseConnection';
 
-const CadastroScreen = () => {
+interface LoginPageProps {
+  onLogin: () => void;
+}
+
+
+const CadastroScreen: React.FC<LoginPageProps> = ({ onLogin }) => {
+  const { userRepository } = useDatabaseConnection();
   const [image, setImage] = useState<string | null>(null);
   const [nome, setNome] = useState('');
   const [idade, setIdade] = useState('');
@@ -24,7 +31,7 @@ const CadastroScreen = () => {
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
 
-  const handleCadastro = () => {
+  const handleCadastro = async () => {
     if (!nome || !idade || !altura || !pesoAtual || !pesoMeta || !senha || !confirmarSenha) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos.');
       return;
@@ -43,6 +50,23 @@ const CadastroScreen = () => {
       weight: parseFloat(pesoAtual),
       height: parseFloat(altura),
     });
+    try {
+      const response = await login({ name: nome, password: senha });
+
+      if (response?.name) {
+        console.log('Login realizado com sucesso!');
+
+        await userRepository.create(response);
+        onLogin();
+      } else {
+        Alert.alert('Erro', 'Credenciais inválidas. Por favor, tente novamente.');
+      }
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+      Alert.alert('Erro', 'Algo deu errado. Por favor, tente novamente mais tarde.');
+    }
+
+
     console.log('Dados de cadastro:', {
       nome,
       idade,
