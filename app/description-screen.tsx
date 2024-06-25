@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { Text, TouchableOpacity, View } from '@/components/Themed';
-import Header from '@/components/Header';
 import { Feather } from '@expo/vector-icons';
 import SearchBar from '@/components/SearchBar';
 import { router } from 'expo-router';
@@ -108,10 +107,6 @@ export default function DescriptionScreen() {
 
   return (
     <View style={[styles.container]} darkColor="#3C3C3C" lightColor="#FFFCEB">
-      <Header title={''} />
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Feather name="arrow-left" size={25} style={styles.arrow} />
-      </TouchableOpacity>
       <Text style={[styles.title]} darkColor="#547260" lightColor="#547260">
         Adicionar Alimentos
       </Text>
@@ -134,7 +129,7 @@ export default function DescriptionScreen() {
         <View style={styles.buttonContainer}>
           <FAB
             style={styles.fab}
-            icon={() => <Feather name="plus" size={24} color='white' />} 
+            icon={() => <Feather name="plus" size={24} color="white" />}
             onPress={handleAddItems}
           />
         </View>

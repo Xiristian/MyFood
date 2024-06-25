@@ -3,6 +3,7 @@ import { isTest } from './test';
 
 export interface UserDTO {
   name?: string;
+  email?: string;
   password?: string;
   age?: number;
   height?: number;
@@ -10,7 +11,7 @@ export interface UserDTO {
   goal?: number;
 }
 
-export const login = async (user: UserDTO): Promise<UserDTO > => {
+export const login = async (user: UserDTO): Promise<UserDTO> => {
   if (isTest) return test;
   try {
     const { data }: { data: UserDTO } = await axios.post(
@@ -28,8 +29,9 @@ export const login = async (user: UserDTO): Promise<UserDTO > => {
 
 export const register = async (user: UserDTO): Promise<string> => {
   try {
-    await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/register`, { user }, { timeout: 20000 });
+    if (isTest) return 'Sucesso ao cadastrar!';
 
+    await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/register`, { user }, { timeout: 20000 });
     return 'Sucesso ao cadastrar!';
   } catch (error) {
     console.error(error);
@@ -37,4 +39,12 @@ export const register = async (user: UserDTO): Promise<string> => {
   }
 };
 
-const test: UserDTO = { name: 'Teste', password: '', age: 21, goal: 95, height: 180, weight: 100 };
+const test: UserDTO = {
+  name: 'Teste',
+  email: 'Teste@email.com',
+  password: '',
+  age: 21,
+  goal: 95,
+  height: 180,
+  weight: 100,
+};

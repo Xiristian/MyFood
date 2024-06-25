@@ -14,15 +14,18 @@ import * as ImagePicker from 'expo-image-picker';
 import { FontAwesome } from '@expo/vector-icons';
 import { login, register } from '@/backend/user';
 import { useDatabaseConnection } from '@/database/DatabaseConnection';
+import { useNavigation } from 'expo-router';
 
 interface LoginPageProps {
   onLogin: () => void;
 }
 
-
 const CadastroScreen: React.FC<LoginPageProps> = ({ onLogin }) => {
+  const navigation = useNavigation();
+
   const { userRepository } = useDatabaseConnection();
   const [image, setImage] = useState<string | null>(null);
+  const [email, setEmail] = useState('');
   const [nome, setNome] = useState('');
   const [idade, setIdade] = useState('');
   const [altura, setAltura] = useState('');
@@ -32,7 +35,16 @@ const CadastroScreen: React.FC<LoginPageProps> = ({ onLogin }) => {
   const [confirmarSenha, setConfirmarSenha] = useState('');
 
   const handleCadastro = async () => {
-    if (!nome || !idade || !altura || !pesoAtual || !pesoMeta || !senha || !confirmarSenha) {
+    if (
+      !nome ||
+      !idade ||
+      !altura ||
+      !pesoAtual ||
+      !pesoMeta ||
+      !senha ||
+      !confirmarSenha ||
+      !email
+    ) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos.');
       return;
     }
@@ -42,22 +54,25 @@ const CadastroScreen: React.FC<LoginPageProps> = ({ onLogin }) => {
       return;
     }
 
-    register({
-      name: nome,
-      password: senha,
-      age: parseInt(idade),
-      goal: parseFloat(pesoMeta),
-      weight: parseFloat(pesoAtual),
-      height: parseFloat(altura),
-    });
     try {
+      await register({
+        email,
+        name: nome,
+        password: senha,
+        age: parseInt(idade),
+        goal: parseFloat(pesoMeta),
+        weight: parseFloat(pesoAtual),
+        height: parseFloat(altura),
+      });
+
       const response = await login({ name: nome, password: senha });
 
       if (response?.name) {
         console.log('Login realizado com sucesso!');
 
         await userRepository.create(response);
-        onLogin();
+        if (onLogin) onLogin();
+        else navigation.goBack();
       } else {
         Alert.alert('Erro', 'Credenciais inválidas. Por favor, tente novamente.');
       }
@@ -65,16 +80,6 @@ const CadastroScreen: React.FC<LoginPageProps> = ({ onLogin }) => {
       console.error('Erro ao fazer login:', error);
       Alert.alert('Erro', 'Algo deu errado. Por favor, tente novamente mais tarde.');
     }
-
-
-    console.log('Dados de cadastro:', {
-      nome,
-      idade,
-      altura,
-      pesoAtual,
-      pesoMeta,
-      senha,
-    });
   };
 
   const pickImage = async () => {
@@ -103,12 +108,10 @@ const CadastroScreen: React.FC<LoginPageProps> = ({ onLogin }) => {
               <FontAwesome name="camera" size={40} color="#547260" />
             )}
           </Pressable>
-
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Nome</Text>
             <TextInput style={styles.input} value={nome} onChangeText={setNome} />
           </View>
-
           <View
             style={[styles.row, styles.inputContainer]}
             lightColor="#FFFCEB"
@@ -156,12 +159,14 @@ const CadastroScreen: React.FC<LoginPageProps> = ({ onLogin }) => {
               />
             </View>
           </View>
-
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>E-Mail</Text>
+            <TextInput style={styles.input} value={email} onChangeText={setEmail} />
+          </View>
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Senha</Text>
             <TextInput style={styles.input} secureTextEntry value={senha} onChangeText={setSenha} />
           </View>
-
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Confirmar Senha</Text>
             <TextInput
@@ -228,8 +233,8 @@ const styles = StyleSheet.create({
   imageContainer: {
     marginTop: 20,
     alignSelf: 'center',
-    width: 150,
-    height: 150,
+    width: 100,
+    height: 100,
     borderRadius: 100,
     marginBottom: 25,
     alignItems: 'center',

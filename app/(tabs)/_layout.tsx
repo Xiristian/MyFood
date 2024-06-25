@@ -4,14 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import LoginPage from '../login';
 import { Pressable, View, StyleSheet, PressableProps, GestureResponderEvent } from 'react-native';
-
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-  size?: number;
-}) {
-  return <FontAwesome size={props.size ?? 28} {...props} />;
-}
+import Logo from '@/components/Logo';
 
 interface CustomTabBarButtonProps extends PressableProps {
   children: React.ReactNode;
@@ -66,7 +59,7 @@ export default function TabLayout() {
             tabBarStyle: styles.tabBar,
           }}>
           <Tabs.Screen
-            name="meals"
+            name="index"
             options={{
               tabBarButton: (props) => (
                 <CustomTabBarButton
@@ -80,7 +73,7 @@ export default function TabLayout() {
             }}
           />
           <Tabs.Screen
-            name="index"
+            name="user"
             options={{
               tabBarButton: (props) => (
                 <CustomTabBarButton

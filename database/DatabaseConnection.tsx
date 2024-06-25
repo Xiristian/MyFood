@@ -31,7 +31,7 @@ export const DatabaseConnectionProvider: React.FC<{
       database: 'myfood.db',
       driver: SQLite,
       entities: [Meal, Food, User],
-      synchronize: true
+      synchronize: true,
     });
     setConnection(await createdConnection.initialize());
   }, []);
