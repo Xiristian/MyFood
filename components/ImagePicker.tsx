@@ -10,10 +10,12 @@ export default function ImagePicker({
   setImage,
   setFoods,
   setError,
+  goBack,
 }: {
   setImage: React.Dispatch<React.SetStateAction<string>>;
   setFoods: React.Dispatch<React.SetStateAction<FoodFromImageDTO[]>>;
   setError: React.Dispatch<React.SetStateAction<string>>;
+  goBack: any;
 }) {
   const pickImageFromLibrary = async () => {
     const imagePickerOptions: DefaultImagePicker.ImagePickerOptions = {
@@ -27,7 +29,7 @@ export default function ImagePicker({
       const result = await readFoodsFromImage(imagePicked.assets[0].uri);
       setError(result.error);
       setFoods(result.foods);
-      setImage(imagePicked.assets[0].uri);
+      goBack();
     }
   };
 

@@ -36,24 +36,10 @@ const test: ResultDTO = {
   error: '',
   foods: [
     {
-      name: 'Pizza',
-      filling: ['queijo', 'presunto'],
-      fillingIdentified: true,
-      quantity: 1,
-      unit: 'fatia',
-    },
-    {
-      name: 'Macarrão',
-      filling: [],
-      fillingIdentified: false,
-      quantity: 1,
-      unit: 'prato',
-    },
-    {
       name: 'Bolo',
       filling: ['chocolate'],
       fillingIdentified: false,
-      quantity: 2,
+      quantity: 1,
       unit: 'fatia',
     },
   ],
