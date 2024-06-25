@@ -1,16 +1,19 @@
-import React, { useCallback, useState } from 'react';
-import { StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { StyleSheet, TouchableOpacity, FlatList, Platform } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { Feather } from '@expo/vector-icons';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Meal } from '@/database/entities/meal-entity';
 import { useDatabaseConnection } from '@/database/DatabaseConnection';
 import { useFocusEffect, useNavigation } from 'expo-router';
 import Header from '@/components/Header';
 import RenderFoods from '@/components/RenderFoods';
 import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types';
+import { platform } from 'os';
+import moment from 'moment'
 
 interface ItemMeal extends Meal {
-  isExpanded?: Boolean;
+  isExpanded?: boolean;
 }
 
 export default function TabTwoScreen() {
@@ -24,20 +27,31 @@ export default function TabTwoScreen() {
   ];
 
   const [data, setData] = useState<ItemMeal[]>([]);
+  const [date, setDate] = useState(new Date());
+  const [showCalendar, setShowCalendar] = useState(false);
 
   async function loadData() {
-    let meals = await mealRepository.findAll();
-    if (!meals || meals.length === 0) meals = await mealRepository.createMeal(initialData);
+    let meals = await mealRepository.findByDate(date);
     setData(meals);
   }
 
-  useFocusEffect(
-    useCallback(() => {
+  useEffect(
+    () => {
       loadData();
-    }, []),
-  );
+    }, [date]
+  )
 
-  const toggleExpansion = (id: number) => {
+  const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+    const currentDate = selectedDate || date;
+    setShowCalendar(Platform.OS === 'ios');
+    setDate(currentDate);
+  };
+
+  const showDatepicker = () => {
+    setShowCalendar(true);
+  };
+
+  function toggleExpansion(id: number) {
     if (data)
       setData(
         data.map((item) => {
@@ -47,20 +61,27 @@ export default function TabTwoScreen() {
           return item;
         }),
       );
-  };
+  }
 
   function IconComponent({ iconName }: { iconName: string }) {
-    if (iconName === 'sunrise') {
-      return <Feather name="sunrise" size={24} color="#76A689" style={styles.icon} />;
-    } else if (iconName === 'coffee') {
-      return <Feather name="coffee" size={24} color="#76A689" style={styles.icon} />;
-    } else if (iconName === 'sun') {
-      return <Feather name="sun" size={24} color="#76A689" style={styles.icon} />;
-    } else if (iconName === 'moon') {
-      return <Feather name="moon" size={24} color="#76A689" style={styles.icon} />;
-    } else {
-      return null;
+    let icon = null;
+    switch (iconName) {
+      case 'sunrise':
+        icon = <Feather name="sunrise" size={24} color="#76A689" style={styles.icon} />;
+        break;
+      case 'coffee':
+        icon = <Feather name="coffee" size={24} color="#76A689" style={styles.icon} />;
+        break;
+      case 'sun':
+        icon = <Feather name="sun" size={24} color="#76A689" style={styles.icon} />;
+        break;
+      case 'moon':
+        icon = <Feather name="moon" size={24} color="#76A689" style={styles.icon} />;
+        break;
+      default:
+        break;
     }
+    return icon;
   }
 
   const RenderItem = ({ item }: { item: ItemMeal }) => {
@@ -88,14 +109,14 @@ export default function TabTwoScreen() {
   };
 
   const RenderExpandedContent = ({ id }: { id: number }) => {
-    type RootStackParamList = { camera: { id: number }; 'description-screen': { id: number } };
+    type RootStackParamList = { camera: { id: number, date: Date }; 'description-screen': { id: number, date: Date } };
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     return (
       <View style={styles.expandedContent}>
         <View style={styles.expandedContentIconsRow} lightColor="#FFFCEB" darkColor="#3C3C3C">
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('camera', { id: id });
+              navigation.navigate('camera', { id: id, date: date });
             }}>
             <View style={styles.iconWithText} lightColor="#FFFCEB" darkColor="#3C3C3C">
               <Feather name="camera" size={24} color="#76A689" style={styles.icon} />
@@ -104,7 +125,7 @@ export default function TabTwoScreen() {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('description-screen', { id: id });
+              navigation.navigate('description-screen', { id: id, date: date });
             }}>
             <View style={styles.iconWithText} lightColor="#FFFCEB" darkColor="#3C3C3C">
               <Feather name="edit" size={24} color="#76A689" style={styles.icon} />
@@ -120,6 +141,21 @@ export default function TabTwoScreen() {
     <View style={styles.container} lightColor="#FFFCEB" darkColor="#3C3C3C">
       <Header title={''} />
       <Text style={styles.title}>Minhas refeições</Text>
+      <TouchableOpacity onPress={showDatepicker} style={styles.datePickerButton}>
+        {Platform.OS !== 'ios'&& <Text style={styles.dateText}>{moment(date).format('DD/MM/yyyy')}</Text>}
+        {(showCalendar || Platform.OS === 'ios') && (
+        <DateTimePicker 
+          testID="dateTimePicker"
+          value={date}
+          mode={'date'}
+          display="default"
+          onChange={onChange}
+          accentColor='#547260'
+          locale="pt-BR"
+        />
+      )}
+        <Feather name="calendar" size={24} color="#76A689" style={styles.calendarIcon} />
+      </TouchableOpacity>
       <View style={styles.listContainer} lightColor="#FFFCEB" darkColor="#3C3C3C">
         <FlatList
           data={data}
@@ -170,6 +206,10 @@ const styles = StyleSheet.create({
   icon: {
     marginRight: 10,
   },
+  calendarIcon: {
+    marginLeft: 20,
+
+  },
   expandedContent: {
     marginTop: 10,
     width: '70%',
@@ -188,5 +228,21 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontSize: 16,
     color: '#76A689',
+  },
+  datePickerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 7,
+    borderWidth: 1,
+    borderColor: '#76A689',
+    borderRadius: 5,
+    marginTop: 10 ,
+    marginBottom: 20,
+    width: '50%'
+  },
+  dateText: {
+    fontSize: 16,
+    color: '#547260',
+    marginLeft: 10
   },
 });

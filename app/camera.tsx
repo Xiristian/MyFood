@@ -11,8 +11,9 @@ import { useDatabaseConnection } from '@/database/DatabaseConnection';
 export default function Camera() {
   const navigation = useNavigation();
 
-  const route = useRoute<RouteProp<{ params: { id: number } }>>();
+  const route = useRoute<RouteProp<{ params: { id: number, date: Date } }>>();
   const id = route.params?.id;
+  const date = route.params?.date;
 
   const [image, setImage] = useState('');
   const [foods, setFoods] = useState<FoodFromImageDTO[]>([]);
@@ -22,7 +23,7 @@ export default function Camera() {
   useEffect(() => {
     async function loadData() {
       for (const food of foods)
-        await mealRepository.createFood(food.name, food.quantity, 0, new Date(), id);
+        await mealRepository.createFood(food.name, food.quantity, 0, date, id);
     }
     loadData();
   }, [foods]);
