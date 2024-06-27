@@ -37,8 +37,13 @@ export class MealRepository {
   async createMeal(meal: Partial<Meal>): Promise<Meal> {
     return await this.mealRepository.save(meal);
   }
+
   async createMeals(meals: Partial<Meal>[]): Promise<Meal[]> {
-    return await this.mealRepository.save(meals);
+    const createdMeals: Meal[] = [];
+    for (const meal of meals) {
+      createdMeals.push(await this.createMeal(meal));
+    }
+    return createdMeals;
   }
 
   async createFood(
@@ -47,6 +52,7 @@ export class MealRepository {
     calories: number,
     date: Date,
     mealId: number,
+    unit: string,
   ): Promise<Food> {
     const meal = await this.mealRepository.findOne({
       where: { id: mealId },
@@ -54,7 +60,7 @@ export class MealRepository {
     });
     if (!meal) throw new Error('Meal not found');
 
-    const food = this.foodRepository.create({ name, quantity, calories, date });
+    const food = this.foodRepository.create({ name, quantity, calories, date, unit });
     food.meal = meal;
     return this.foodRepository.save(food);
   }

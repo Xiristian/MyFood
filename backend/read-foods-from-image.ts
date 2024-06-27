@@ -1,46 +1,26 @@
 import axios from 'axios';
 import * as fs from 'expo-file-system';
-import { FoodFromImageDTO } from './FoodFromImageDTO';
 import { isTest } from './test';
+import { FoodDTO, FoodsDTO } from './get-foods';
 
-interface ResultDTO {
-  error: string;
-  foods: FoodFromImageDTO[];
-}
-
-export const readFoodsFromImage = async (uri: string): Promise<ResultDTO> => {
+export const readFoodsFromImage = async (uri: string): Promise<FoodDTO[]> => {
   if (isTest) return test;
   try {
     const image = await fs.readAsStringAsync(uri, {
       encoding: fs.EncodingType.Base64,
     });
 
-    const { data }: { data: ResultDTO } = await axios.post(
+    const { data }: { data: FoodsDTO } = await axios.post(
       `${process.env.EXPO_PUBLIC_API_URL}/read-foods-from-image`,
       { image },
       { timeout: 20000 },
     );
 
-    return { error: data.error, foods: data.foods };
+    return data.foods;
   } catch (error) {
     console.error(error);
-    return {
-      error:
-        'Não foi possível estabelecer conexão com o servidor. Verifique sua conexão de internet.',
-      foods: [],
-    };
+    return [];
   }
 };
 
-const test: ResultDTO = {
-  error: '',
-  foods: [
-    {
-      name: 'Bolo',
-      filling: ['chocolate'],
-      fillingIdentified: false,
-      quantity: 1,
-      unit: 'fatia',
-    },
-  ],
-};
+const test: FoodDTO[] = [];

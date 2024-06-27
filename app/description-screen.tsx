@@ -90,7 +90,14 @@ export default function DescriptionScreen() {
     if (selectedItems.length > 0) {
       for (const item of selectedItems) {
         const food = searchResults.filter((value) => value.food_id === item)[0];
-        await mealRepository.createFood(food.food_name, food.quantity, food.calories, date, mealId);
+        await mealRepository.createFood(
+          food.food_name,
+          food.quantity,
+          food.calories,
+          date,
+          mealId,
+          food.unit,
+        );
       }
       route.params?.loadData();
       router.back();

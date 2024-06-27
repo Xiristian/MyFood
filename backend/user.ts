@@ -12,7 +12,7 @@ export interface UserDTO {
 }
 
 export const login = async (user: UserDTO): Promise<UserDTO> => {
-  if (isTest) return test;
+  if (true) return test;
   try {
     const { data }: { data: { user: UserDTO } } = await axios.post(
       `${process.env.EXPO_PUBLIC_API_URL}/login`,

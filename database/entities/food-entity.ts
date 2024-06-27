@@ -13,6 +13,7 @@ export class Food extends BaseEntity {
   @Column('numeric')
   calories: number;
 
+  @Column('varchar')
   unit: string;
 
   @Column('date')
