@@ -37,7 +37,8 @@ export const getFoods = async (search: string, page: number = 0): Promise<FoodDT
       `${process.env.EXPO_PUBLIC_API_URL}/foods`,
       { timeout: 20000, params: { search, page, pageSize: 50 } },
     );
-    return data.foods;
+    if (!data.foods) return [];
+    return data?.foods;
   } catch (error) {
     console.error(error);
     return [];

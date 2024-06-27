@@ -3,28 +3,35 @@ import { Text, View } from '@/components/Themed';
 import { useEffect, useState } from 'react';
 import { Feather } from '@expo/vector-icons';
 import CustomImagePicker from '@/components/ImagePicker';
-import { FoodFromImageDTO } from '../backend/FoodFromImageDTO';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useDatabaseConnection } from '@/database/DatabaseConnection';
+import { FoodDTO } from '@/backend/get-foods';
 
 export default function Camera() {
   const navigation = useNavigation();
 
-  const route = useRoute<RouteProp<{ params: { id: number, date: Date, loadData: any } }>>();
+  const route = useRoute<RouteProp<{ params: { id: number; date: Date; loadData: any } }>>();
   const id = route.params?.id;
   const date = route.params?.date;
   const loadData = route.params?.loadData;
 
   const [image, setImage] = useState('');
-  const [foods, setFoods] = useState<FoodFromImageDTO[]>([]);
+  const [foods, setFoods] = useState<FoodDTO[]>([]);
   const [error, setError] = useState('');
   const { mealRepository } = useDatabaseConnection();
 
   useEffect(() => {
     async function createFoods() {
       for (const food of foods)
-        await mealRepository.createFood(food.name, food.quantity, 0, date, id);
-      loadData()
+        await mealRepository.createFood(
+          food.food_name,
+          food.quantity,
+          food.calories,
+          date,
+          id,
+          food.unit,
+        );
+      loadData();
     }
     createFoods();
   }, [foods]);
@@ -35,21 +42,19 @@ export default function Camera() {
         <Feather name="arrow-left" size={25} style={styles.arrow} />
       </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.container}>
-        <CustomImagePicker setImage={setImage} setFoods={setFoods} setError={setError} goBack={navigation.goBack} />
+        <CustomImagePicker
+          setImage={setImage}
+          setFoods={setFoods}
+          setError={setError}
+          goBack={navigation.goBack}
+        />
         {error ? (
           <Text>{error}</Text>
         ) : foods ? (
           foods.map((food) => (
-            <View key={food.name}>
+            <View key={food.food_name}>
               <Text>
-                {food.name} {food.quantity} {food.unit}
-              </Text>
-              <Text>
-                {food.filling.length > 0
-                  ? food.fillingIdentified
-                    ? `Possíveis recheios: ${food.filling.join(', ')}`
-                    : `Recheio: ${food.filling.join(', ')}`
-                  : 'Recheio não identificado'}
+                {food.food_name} {food.quantity} {food.unit}
               </Text>
             </View>
           ))

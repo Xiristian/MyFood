@@ -42,7 +42,7 @@ function CustomTabBarButton({
 
 export default function TabLayout() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [selectedTab, setSelectedTab] = useState('user');
+  const [selectedTab, setSelectedTab] = useState('meals');
 
   const handleLogin = () => {
     setIsAuthenticated(true);

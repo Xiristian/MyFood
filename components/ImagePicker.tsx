@@ -1,10 +1,10 @@
 import * as DefaultImagePicker from 'expo-image-picker';
-import { Button, View, Text } from './Themed';
+import { View, Text } from './Themed';
 import { readFoodsFromImage } from '@/backend/read-foods-from-image';
-import { FoodFromImageDTO } from '@/backend/FoodFromImageDTO';
-import { useEffect } from 'react';
 import { Feather } from '@expo/vector-icons';
-import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import { FoodDTO } from '@/backend/get-foods';
+import { useState } from 'react';
 
 export default function ImagePicker({
   setImage,
@@ -13,58 +13,72 @@ export default function ImagePicker({
   goBack,
 }: {
   setImage: React.Dispatch<React.SetStateAction<string>>;
-  setFoods: React.Dispatch<React.SetStateAction<FoodFromImageDTO[]>>;
+  setFoods: React.Dispatch<React.SetStateAction<FoodDTO[]>>;
   setError: React.Dispatch<React.SetStateAction<string>>;
   goBack: any;
 }) {
-  const pickImageFromLibrary = async () => {
-    const imagePickerOptions: DefaultImagePicker.ImagePickerOptions = {
-      mediaTypes: DefaultImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    };
-    let imagePicked = await DefaultImagePicker.launchImageLibraryAsync(imagePickerOptions);
+  const [loading, setLoading] = useState(false);
 
-    if (!imagePicked.canceled) {
-      const result = await readFoodsFromImage(imagePicked.assets[0].uri);
-      setError(result.error);
-      setFoods(result.foods);
-      goBack();
+  const pickImageFromLibrary = async () => {
+    try {
+      const imagePickerOptions: DefaultImagePicker.ImagePickerOptions = {
+        mediaTypes: DefaultImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+      };
+      let imagePicked = await DefaultImagePicker.launchImageLibraryAsync(imagePickerOptions);
+
+      if (!imagePicked.canceled) {
+        setLoading(true);
+        const result = await readFoodsFromImage(imagePicked.assets[0].uri);
+        setFoods(result);
+        goBack();
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   const takePhotoWithCamera = async () => {
-    const imagePickerOptions: DefaultImagePicker.ImagePickerOptions = {
-      allowsEditing: true,
-      quality: 1,
-    };
-    let imagePicked = await DefaultImagePicker.launchCameraAsync(imagePickerOptions);
+    try {
+      const imagePickerOptions: DefaultImagePicker.ImagePickerOptions = {
+        allowsEditing: true,
+        quality: 1,
+      };
+      let imagePicked = await DefaultImagePicker.launchCameraAsync(imagePickerOptions);
 
-    if (!imagePicked.canceled) {
-      const result = await readFoodsFromImage(imagePicked.assets[0].uri);
-      setError(result.error);
-      setFoods(result.foods);
-      setImage(imagePicked.assets[0].uri);
+      if (!imagePicked.canceled) {
+        setLoading(true);
+        const result = await readFoodsFromImage(imagePicked.assets[0].uri);
+        setFoods(result);
+        setImage(imagePicked.assets[0].uri);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <View style={styles.container} lightColor="#FFFCEB" darkColor="#3C3C3C">
-      <View style={styles.bottomButtons} lightColor="#FFFCEB" darkColor="#3C3C3C">
-        <TouchableOpacity onPress={takePhotoWithCamera}>
-          <View style={styles.iconWithText} lightColor="#FFFCEB" darkColor="#3C3C3C">
-            <Feather name="camera" size={54} color="#76A689" style={styles.icon} />
-            <Text style={styles.iconDescription}>Fotografar</Text>
-          </View>
-        </TouchableOpacity>
-        <View style={styles.separator} />
-        <TouchableOpacity onPress={pickImageFromLibrary}>
-          <View style={styles.iconWithText} lightColor="#FFFCEB" darkColor="#3C3C3C">
-            <Feather name="image" size={54} color="#76A689" style={styles.icon} />
-            <Text style={styles.iconDescription}>Carregar foto</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+      {loading ? (
+        <Text>Carregando...</Text>
+      ) : (
+        <View style={styles.bottomButtons} lightColor="#FFFCEB" darkColor="#3C3C3C">
+          <TouchableOpacity onPress={takePhotoWithCamera}>
+            <View style={styles.iconWithText} lightColor="#FFFCEB" darkColor="#3C3C3C">
+              <Feather name="camera" size={54} color="#76A689" style={styles.icon} />
+              <Text style={styles.iconDescription}>Fotografar</Text>
+            </View>
+          </TouchableOpacity>
+          <View style={styles.separator} />
+          <TouchableOpacity onPress={pickImageFromLibrary}>
+            <View style={styles.iconWithText} lightColor="#FFFCEB" darkColor="#3C3C3C">
+              <Feather name="image" size={54} color="#76A689" style={styles.icon} />
+              <Text style={styles.iconDescription}>Carregar foto</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }
